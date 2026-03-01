@@ -82,6 +82,8 @@ export default function HomeClient({
             >
               PHOTOBOOK
               <br />
+              & ArtBook
+              <br />
               LIBRARY
             </h1>
 
@@ -97,7 +99,7 @@ export default function HomeClient({
               className="text-base md:text-lg max-w-md leading-relaxed mb-10"
               style={{ color: "var(--text-secondary)" }}
             >
-              개인 소장 사진책 컬렉션
+              개인 소장 사진책 & 아트북 컬렉션
             </p>
 
             {/* CTA 버튼 */}
