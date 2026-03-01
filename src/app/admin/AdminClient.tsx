@@ -3,7 +3,11 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { createBook, updateBook, deleteBook, getAdminBooks, uploadImage, fetchBookDataByISBN } from "./actions";
+import {
+  createBook, updateBook, deleteBook, getAdminBooks,
+  uploadImage, fetchBookDataByISBN,
+  createCategory, updateCategory, deleteCategory, getCategories,
+} from "./actions";
 
 const RichTextEditor = dynamic(() => import("./RichTextEditor"), { ssr: false });
 
@@ -12,6 +16,7 @@ interface Category {
   name: string;
   nameEn: string;
   slug: string;
+  description?: string;
   color: string;
   order: number;
 }
@@ -735,14 +740,227 @@ function BookForm({
   );
 }
 
+// ─── 카테고리 등록/수정 폼 ───
+function CategoryForm({
+  editCategory,
+  onClose,
+  onSaved,
+}: {
+  editCategory?: Category | null;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const isEdit = Boolean(editCategory);
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    const formData = new FormData(e.currentTarget);
+
+    startTransition(async () => {
+      try {
+        const result = isEdit && editCategory
+          ? await updateCategory(editCategory._id, formData)
+          : await createCategory(formData);
+        if (!result.success) {
+          setError(result.error);
+          return;
+        }
+        onSaved();
+        onClose();
+      } catch {
+        setError("저장에 실패했습니다. 다시 시도해주세요.");
+      }
+    });
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+    >
+      <div
+        className="w-full max-w-md rounded-xl p-6"
+        style={{
+          backgroundColor: "var(--bg-secondary)",
+          border: "1px solid var(--border)",
+        }}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2
+            className="text-xl font-bold"
+            style={{
+              fontFamily: "var(--font-heading)",
+              color: "var(--text-primary)",
+            }}
+          >
+            {isEdit ? "카테고리 수정" : "새 카테고리"}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded-lg transition-colors"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        {error && (
+          <div
+            className="mb-4 p-3 rounded-lg text-sm"
+            style={{
+              backgroundColor: "rgba(229,62,62,0.1)",
+              color: "var(--danger)",
+              border: "1px solid rgba(229,62,62,0.3)",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+              이름 *
+            </span>
+            <input
+              name="name"
+              required
+              defaultValue={editCategory?.name}
+              className="px-3 py-2 rounded-lg text-sm"
+              style={{
+                backgroundColor: "var(--bg-tertiary)",
+                border: "1px solid var(--border)",
+                color: "var(--text-primary)",
+              }}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+              영문 이름
+            </span>
+            <input
+              name="nameEn"
+              defaultValue={editCategory?.nameEn}
+              placeholder="slug 자동 생성에 사용됩니다"
+              className="px-3 py-2 rounded-lg text-sm"
+              style={{
+                backgroundColor: "var(--bg-tertiary)",
+                border: "1px solid var(--border)",
+                color: "var(--text-primary)",
+              }}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+              설명
+            </span>
+            <textarea
+              name="description"
+              rows={2}
+              defaultValue={editCategory?.description}
+              className="px-3 py-2 rounded-lg text-sm resize-y"
+              style={{
+                backgroundColor: "var(--bg-tertiary)",
+                border: "1px solid var(--border)",
+                color: "var(--text-primary)",
+              }}
+            />
+          </label>
+
+          <div className="grid grid-cols-2 gap-4">
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+                색상
+              </span>
+              <div className="flex items-center gap-2">
+                <input
+                  name="color"
+                  type="color"
+                  defaultValue={editCategory?.color || "#D4A574"}
+                  className="w-10 h-10 rounded-lg cursor-pointer border-0 p-0"
+                  style={{ backgroundColor: "transparent" }}
+                />
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                  HEX 색상 코드
+                </span>
+              </div>
+            </label>
+
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+                정렬 순서
+              </span>
+              <input
+                name="order"
+                type="number"
+                min={0}
+                defaultValue={editCategory?.order ?? 0}
+                className="px-3 py-2 rounded-lg text-sm"
+                style={{
+                  backgroundColor: "var(--bg-tertiary)",
+                  border: "1px solid var(--border)",
+                  color: "var(--text-primary)",
+                }}
+              />
+            </label>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isPending}
+              className="flex-1 py-2.5 rounded-lg text-sm font-medium transition-colors"
+              style={{
+                backgroundColor: isPending ? "var(--text-muted)" : "var(--accent)",
+                color: "#0D0D0D",
+              }}
+            >
+              {isPending ? "저장 중..." : isEdit ? "수정 완료" : "등록하기"}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors"
+              style={{
+                backgroundColor: "var(--bg-tertiary)",
+                color: "var(--text-secondary)",
+                border: "1px solid var(--border)",
+              }}
+            >
+              취소
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── 메인 관리자 컴포넌트 ───
-export default function AdminClient({ initialBooks, categories }: AdminClientProps) {
+export default function AdminClient({ initialBooks, categories: initialCategories }: AdminClientProps) {
+  const [activeTab, setActiveTab] = useState<"books" | "categories">("books");
   const [books, setBooks] = useState(initialBooks);
+  const [categories, setCategories] = useState(initialCategories);
   const [showForm, setShowForm] = useState(false);
   const [editBook, setEditBook] = useState<AdminBook | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminBook | null>(null);
   const [isPending, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState("");
+
+  // 카테고리 관리 상태
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [editCategory, setEditCategory] = useState<Category | null>(null);
+  const [deleteCategoryTarget, setDeleteCategoryTarget] = useState<Category | null>(null);
+  const [categoryDeleteError, setCategoryDeleteError] = useState<string | null>(null);
 
   const filteredBooks = searchQuery
     ? books.filter(
@@ -781,6 +999,43 @@ export default function AdminClient({ initialBooks, categories }: AdminClientPro
     startTransition(async () => {
       const updated = await getAdminBooks();
       setBooks(updated);
+    });
+  }
+
+  // 카테고리 핸들러
+  function handleNewCategory() {
+    setEditCategory(null);
+    setShowCategoryForm(true);
+  }
+
+  function handleEditCategory(cat: Category) {
+    setEditCategory(cat);
+    setShowCategoryForm(true);
+  }
+
+  function handleDeleteCategory(cat: Category) {
+    setCategoryDeleteError(null);
+    setDeleteCategoryTarget(cat);
+  }
+
+  function confirmDeleteCategory() {
+    if (!deleteCategoryTarget) return;
+    startTransition(async () => {
+      const result = await deleteCategory(deleteCategoryTarget._id);
+      if (!result.success) {
+        setCategoryDeleteError(result.error);
+        return;
+      }
+      const updated = await getCategories();
+      setCategories(updated);
+      setDeleteCategoryTarget(null);
+    });
+  }
+
+  function handleCategorySaved() {
+    startTransition(async () => {
+      const updated = await getCategories();
+      setCategories(updated);
     });
   }
 
@@ -825,179 +1080,343 @@ export default function AdminClient({ initialBooks, categories }: AdminClientPro
                 color: "var(--accent)",
               }}
             >
-              {books.length}권
+              {activeTab === "books" ? `${books.length}권` : `${categories.length}개`}
             </span>
           </div>
+        </div>
+
+        {/* 탭 */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex gap-0">
+          {([
+            { key: "books" as const, label: "도서" },
+            { key: "categories" as const, label: "카테고리" },
+          ]).map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+              className="px-4 py-2.5 text-sm font-medium transition-colors relative"
+              style={{
+                color: activeTab === tab.key ? "var(--accent)" : "var(--text-muted)",
+              }}
+            >
+              {tab.label}
+              {activeTab === tab.key && (
+                <span
+                  className="absolute bottom-0 left-0 right-0 h-0.5"
+                  style={{ backgroundColor: "var(--accent)" }}
+                />
+              )}
+            </button>
+          ))}
         </div>
       </header>
 
       {/* 메인 */}
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        {/* 툴바 */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex-1">
-            <input
-              type="text"
-              placeholder="제목, 작가, 카테고리로 검색..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:max-w-sm px-4 py-2.5 rounded-lg text-sm"
+        {/* ─── 도서 탭 ─── */}
+        {activeTab === "books" && (
+          <>
+            {/* 툴바 */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+              <div className="flex-1">
+                <input
+                  type="text"
+                  placeholder="제목, 작가, 카테고리로 검색..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full sm:max-w-sm px-4 py-2.5 rounded-lg text-sm"
+                  style={{
+                    backgroundColor: "var(--bg-secondary)",
+                    border: "1px solid var(--border)",
+                    color: "var(--text-primary)",
+                  }}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleNew}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                style={{
+                  backgroundColor: "var(--accent)",
+                  color: "#0D0D0D",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                새 사진책 등록
+              </button>
+            </div>
+
+            {/* 도서 목록 테이블 */}
+            <div
+              className="rounded-xl overflow-hidden"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 border: "1px solid var(--border)",
-                color: "var(--text-primary)",
               }}
-            />
-          </div>
-          <button
-            type="button"
-            onClick={handleNew}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
-            style={{
-              backgroundColor: "var(--accent)",
-              color: "#0D0D0D",
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            새 사진책 등록
-          </button>
-        </div>
-
-        {/* 도서 목록 테이블 */}
-        <div
-          className="rounded-xl overflow-hidden"
-          style={{
-            backgroundColor: "var(--bg-secondary)",
-            border: "1px solid var(--border)",
-          }}
-        >
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr style={{ borderBottom: "1px solid var(--border)" }}>
-                  {["제목", "작가", "연도", "카테고리", "추천", ""].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        {h}
-                      </th>
-                    )
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {filteredBooks.map((book) => (
-                  <tr
-                    key={book._id}
-                    className="transition-colors"
-                    style={{ borderBottom: "1px solid var(--border)" }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor =
-                        "var(--bg-tertiary)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor = "transparent")
-                    }
-                  >
-                    <td className="px-4 py-3">
-                      <div>
-                        <span
-                          className="font-medium"
-                          style={{ color: "var(--text-primary)" }}
-                        >
-                          {book.title}
-                        </span>
-                        {book.titleEn && book.titleEn !== book.title && (
-                          <span
-                            className="block text-xs mt-0.5"
+            >
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                      {["제목", "작가", "연도", "카테고리", "추천", ""].map(
+                        (h) => (
+                          <th
+                            key={h}
+                            className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider"
                             style={{ color: "var(--text-muted)" }}
                           >
-                            {book.titleEn}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td
-                      className="px-4 py-3"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      {book.author}
-                    </td>
-                    <td
-                      className="px-4 py-3 tabular-nums"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      {book.year}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className="text-xs px-2 py-1 rounded-full"
-                        style={{
-                          backgroundColor: "var(--bg-tertiary)",
-                          color: "var(--text-secondary)",
-                        }}
-                      >
-                        {book.category}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {book.featured && (
-                        <span style={{ color: "var(--accent)" }}>★</span>
+                            {h}
+                          </th>
+                        )
                       )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2 justify-end">
-                        <button
-                          type="button"
-                          onClick={() => handleEdit(book)}
-                          className="px-3 py-1.5 rounded-md text-xs transition-colors"
-                          style={{
-                            backgroundColor: "var(--bg-tertiary)",
-                            color: "var(--text-secondary)",
-                            border: "1px solid var(--border)",
-                          }}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredBooks.map((book) => (
+                      <tr
+                        key={book._id}
+                        className="transition-colors"
+                        style={{ borderBottom: "1px solid var(--border)" }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.backgroundColor =
+                            "var(--bg-tertiary)")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.backgroundColor = "transparent")
+                        }
+                      >
+                        <td className="px-4 py-3">
+                          <div>
+                            <span
+                              className="font-medium"
+                              style={{ color: "var(--text-primary)" }}
+                            >
+                              {book.title}
+                            </span>
+                            {book.titleEn && book.titleEn !== book.title && (
+                              <span
+                                className="block text-xs mt-0.5"
+                                style={{ color: "var(--text-muted)" }}
+                              >
+                                {book.titleEn}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td
+                          className="px-4 py-3"
+                          style={{ color: "var(--text-secondary)" }}
                         >
-                          수정
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(book)}
-                          className="px-3 py-1.5 rounded-md text-xs transition-colors"
-                          style={{
-                            backgroundColor: "rgba(229,62,62,0.1)",
-                            color: "var(--danger)",
-                            border: "1px solid rgba(229,62,62,0.2)",
-                          }}
+                          {book.author}
+                        </td>
+                        <td
+                          className="px-4 py-3 tabular-nums"
+                          style={{ color: "var(--text-secondary)" }}
                         >
-                          삭제
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {filteredBooks.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="text-center py-12"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {searchQuery
-                        ? "검색 결과가 없습니다"
-                        : "등록된 사진책이 없습니다"}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                          {book.year}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className="text-xs px-2 py-1 rounded-full"
+                            style={{
+                              backgroundColor: "var(--bg-tertiary)",
+                              color: "var(--text-secondary)",
+                            }}
+                          >
+                            {book.category}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          {book.featured && (
+                            <span style={{ color: "var(--accent)" }}>★</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              type="button"
+                              onClick={() => handleEdit(book)}
+                              className="px-3 py-1.5 rounded-md text-xs transition-colors"
+                              style={{
+                                backgroundColor: "var(--bg-tertiary)",
+                                color: "var(--text-secondary)",
+                                border: "1px solid var(--border)",
+                              }}
+                            >
+                              수정
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(book)}
+                              className="px-3 py-1.5 rounded-md text-xs transition-colors"
+                              style={{
+                                backgroundColor: "rgba(229,62,62,0.1)",
+                                color: "var(--danger)",
+                                border: "1px solid rgba(229,62,62,0.2)",
+                              }}
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {filteredBooks.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={6}
+                          className="text-center py-12"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {searchQuery
+                            ? "검색 결과가 없습니다"
+                            : "등록된 사진책이 없습니다"}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* ─── 카테고리 탭 ─── */}
+        {activeTab === "categories" && (
+          <>
+            <div className="flex justify-end mb-6">
+              <button
+                type="button"
+                onClick={handleNewCategory}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                style={{
+                  backgroundColor: "var(--accent)",
+                  color: "#0D0D0D",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                새 카테고리
+              </button>
+            </div>
+
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                border: "1px solid var(--border)",
+              }}
+            >
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                      {["이름", "영문 이름", "색상", "순서", ""].map((h) => (
+                        <th
+                          key={h}
+                          className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {categories.map((cat) => (
+                      <tr
+                        key={cat._id}
+                        className="transition-colors"
+                        style={{ borderBottom: "1px solid var(--border)" }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.backgroundColor = "var(--bg-tertiary)")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.backgroundColor = "transparent")
+                        }
+                      >
+                        <td className="px-4 py-3">
+                          <span className="font-medium" style={{ color: "var(--text-primary)" }}>
+                            {cat.name}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3" style={{ color: "var(--text-secondary)" }}>
+                          {cat.nameEn || "-"}
+                        </td>
+                        <td className="px-4 py-3">
+                          {cat.color ? (
+                            <div className="flex items-center gap-2">
+                              <span
+                                className="inline-block w-4 h-4 rounded-full flex-shrink-0"
+                                style={{ backgroundColor: cat.color }}
+                              />
+                              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                                {cat.color}
+                              </span>
+                            </div>
+                          ) : (
+                            <span style={{ color: "var(--text-muted)" }}>-</span>
+                          )}
+                        </td>
+                        <td
+                          className="px-4 py-3 tabular-nums"
+                          style={{ color: "var(--text-secondary)" }}
+                        >
+                          {cat.order ?? "-"}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              type="button"
+                              onClick={() => handleEditCategory(cat)}
+                              className="px-3 py-1.5 rounded-md text-xs transition-colors"
+                              style={{
+                                backgroundColor: "var(--bg-tertiary)",
+                                color: "var(--text-secondary)",
+                                border: "1px solid var(--border)",
+                              }}
+                            >
+                              수정
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteCategory(cat)}
+                              className="px-3 py-1.5 rounded-md text-xs transition-colors"
+                              style={{
+                                backgroundColor: "rgba(229,62,62,0.1)",
+                                color: "var(--danger)",
+                                border: "1px solid rgba(229,62,62,0.2)",
+                              }}
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {categories.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="text-center py-12"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          등록된 카테고리가 없습니다
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
       </main>
 
       {/* 등록/수정 폼 모달 */}
@@ -1010,7 +1429,108 @@ export default function AdminClient({ initialBooks, categories }: AdminClientPro
         />
       )}
 
-      {/* 삭제 확인 모달 */}
+      {/* 카테고리 등록/수정 폼 모달 */}
+      {showCategoryForm && (
+        <CategoryForm
+          editCategory={editCategory}
+          onClose={() => setShowCategoryForm(false)}
+          onSaved={handleCategorySaved}
+        />
+      )}
+
+      {/* 카테고리 삭제 확인 모달 */}
+      {deleteCategoryTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+        >
+          <div
+            className="w-full max-w-sm rounded-xl p-6 text-center"
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              border: "1px solid var(--border)",
+            }}
+          >
+            <div
+              className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center"
+              style={{ backgroundColor: "rgba(229,62,62,0.1)" }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                style={{ color: "var(--danger)" }}
+              >
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+            </div>
+            <h3
+              className="text-lg font-bold mb-2"
+              style={{
+                fontFamily: "var(--font-heading)",
+                color: "var(--text-primary)",
+              }}
+            >
+              카테고리 삭제
+            </h3>
+            <p
+              className="text-sm mb-4"
+              style={{ color: "var(--text-muted)" }}
+            >
+              &ldquo;{deleteCategoryTarget.name}&rdquo;을(를) 삭제하시겠습니까?
+              <br />
+              이 작업은 되돌릴 수 없습니다.
+            </p>
+            {categoryDeleteError && (
+              <div
+                className="mb-4 p-3 rounded-lg text-sm text-left"
+                style={{
+                  backgroundColor: "rgba(229,62,62,0.1)",
+                  color: "var(--danger)",
+                  border: "1px solid rgba(229,62,62,0.3)",
+                }}
+              >
+                {categoryDeleteError}
+              </div>
+            )}
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setDeleteCategoryTarget(null);
+                  setCategoryDeleteError(null);
+                }}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium"
+                style={{
+                  backgroundColor: "var(--bg-tertiary)",
+                  color: "var(--text-secondary)",
+                  border: "1px solid var(--border)",
+                }}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteCategory}
+                disabled={isPending}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium"
+                style={{
+                  backgroundColor: "var(--danger)",
+                  color: "#fff",
+                }}
+              >
+                {isPending ? "삭제 중..." : "삭제"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 도서 삭제 확인 모달 */}
       {deleteTarget && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"

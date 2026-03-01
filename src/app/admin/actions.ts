@@ -43,8 +43,107 @@ function toSlug(str: string): string {
 // ─── 카테고리 목록 조회 ───
 export async function getCategories() {
   return adminClient.fetch(
-    `*[_type == "category"] | order(order asc) { _id, name, nameEn, "slug": slug.current, color, order }`
+    `*[_type == "category"] | order(order asc) { _id, name, nameEn, "slug": slug.current, description, color, order }`
   );
+}
+
+// ─── 카테고리 생성 ───
+export async function createCategory(formData: FormData) {
+  const name = formData.get("name") as string;
+  const nameEn = formData.get("nameEn") as string;
+  const description = formData.get("description") as string;
+  const color = formData.get("color") as string;
+  const order = parseInt(formData.get("order") as string) || 0;
+
+  if (!name) {
+    return { success: false as const, error: "카테고리 이름은 필수입니다." };
+  }
+
+  const slug = nameEn ? toSlug(nameEn) : toSlug(name);
+
+  try {
+    await adminClient.create({
+      _type: "category",
+      name,
+      nameEn: nameEn || undefined,
+      slug: { _type: "slug", current: slug },
+      description: description || undefined,
+      color: color || undefined,
+      order,
+    });
+
+    revalidatePath("/admin");
+    revalidatePath("/books");
+    revalidatePath("/");
+    return { success: true as const };
+  } catch (err) {
+    console.error("[Category] Create failed:", err);
+    return { success: false as const, error: "카테고리 생성에 실패했습니다." };
+  }
+}
+
+// ─── 카테고리 수정 ───
+export async function updateCategory(id: string, formData: FormData) {
+  const name = formData.get("name") as string;
+  const nameEn = formData.get("nameEn") as string;
+  const description = formData.get("description") as string;
+  const color = formData.get("color") as string;
+  const order = parseInt(formData.get("order") as string) || 0;
+
+  if (!name) {
+    return { success: false as const, error: "카테고리 이름은 필수입니다." };
+  }
+
+  const slug = nameEn ? toSlug(nameEn) : toSlug(name);
+
+  try {
+    await adminClient
+      .patch(id)
+      .set({
+        name,
+        nameEn: nameEn || undefined,
+        slug: { _type: "slug", current: slug },
+        description: description || undefined,
+        color: color || undefined,
+        order,
+      })
+      .commit();
+
+    revalidatePath("/admin");
+    revalidatePath("/books");
+    revalidatePath("/");
+    return { success: true as const };
+  } catch (err) {
+    console.error("[Category] Update failed:", err);
+    return { success: false as const, error: "카테고리 수정에 실패했습니다." };
+  }
+}
+
+// ─── 카테고리 삭제 ───
+export async function deleteCategory(id: string) {
+  try {
+    // 해당 카테고리를 참조하는 책이 있는지 확인
+    const refCount = await adminClient.fetch<number>(
+      `count(*[_type == "book" && category._ref == $id])`,
+      { id }
+    );
+
+    if (refCount > 0) {
+      return {
+        success: false as const,
+        error: `이 카테고리를 사용 중인 도서가 ${refCount}권 있습니다. 먼저 해당 도서의 카테고리를 변경해주세요.`,
+      };
+    }
+
+    await adminClient.delete(id);
+    revalidatePath("/admin");
+    revalidatePath("/books");
+    revalidatePath("/");
+    return { success: true as const };
+  } catch (err) {
+    console.error("[Category] Delete failed:", err);
+    return { success: false as const, error: "카테고리 삭제에 실패했습니다." };
+  }
 }
 
 // ─── ISBN 조회 서버 액션 ───
