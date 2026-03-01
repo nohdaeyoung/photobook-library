@@ -94,6 +94,7 @@ function BookForm({
     setError(null);
     const fileArray = Array.from(files);
     for (const file of fileArray) {
+      const localPreview = URL.createObjectURL(file);
       try {
         const fd = new FormData();
         fd.append("file", file);
@@ -101,12 +102,14 @@ function BookForm({
         if (result.success && result.assetId) {
           setGalleryImages((prev) => [
             ...prev,
-            { assetId: result.assetId!, url: result.url || "" },
+            { assetId: result.assetId!, url: result.url || localPreview },
           ]);
         } else {
+          URL.revokeObjectURL(localPreview);
           setError(`"${file.name}" 업로드 실패: ${result.error || "알 수 없는 오류"}`);
         }
       } catch (err) {
+        URL.revokeObjectURL(localPreview);
         setError(`"${file.name}" 업로드 중 오류가 발생했습니다.`);
         console.error("Gallery upload error:", err);
       }
