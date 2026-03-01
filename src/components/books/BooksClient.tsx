@@ -81,6 +81,7 @@ export default function BooksClient({
     () => (selectedTagsRaw ? selectedTagsRaw.split(",").filter(Boolean) : []),
     [selectedTagsRaw]
   );
+  const featuredOnly = searchParams.get("featured") === "true";
 
   // FilterSidebar에 넘길 카테고리 목록 (bookCount 포함)
   const sidebarCategories = useMemo(
@@ -96,13 +97,13 @@ export default function BooksClient({
   // ─── URL 업데이트 헬퍼 ─────────────────────────────────────────────────────
 
   const updateURL = useCallback(
-    (category: string | null, tags: string[]) => {
+    (category: string | null, tags: string[], featured: boolean) => {
       const params = new URLSearchParams();
+      if (featured) params.set("featured", "true");
       if (category) params.set("category", category);
       if (tags.length > 0) params.set("tags", tags.join(","));
       const query = params.toString();
       router.replace(query ? `/books?${query}` : "/books", { scroll: false });
-      // 필터 변경 시 표시 개수 초기화
       setVisibleCount(INITIAL_VISIBLE);
     },
     [router]
@@ -112,9 +113,9 @@ export default function BooksClient({
 
   const handleCategoryChange = useCallback(
     (slug: string | null) => {
-      updateURL(slug, selectedTags);
+      updateURL(slug, selectedTags, featuredOnly);
     },
-    [updateURL, selectedTags]
+    [updateURL, selectedTags, featuredOnly]
   );
 
   const handleTagChange = useCallback(
@@ -122,26 +123,21 @@ export default function BooksClient({
       const next = selectedTags.includes(tag)
         ? selectedTags.filter((t) => t !== tag)
         : [...selectedTags, tag];
-      updateURL(selectedCategory, next);
+      updateURL(selectedCategory, next, featuredOnly);
     },
-    [updateURL, selectedCategory, selectedTags]
+    [updateURL, selectedCategory, selectedTags, featuredOnly]
   );
-
-  // 추천 필터
-  const [featuredOnly, setFeaturedOnly] = useState(false);
 
   const handleFeaturedChange = useCallback(
     (featured: boolean) => {
-      setFeaturedOnly(featured);
-      setVisibleCount(INITIAL_VISIBLE);
+      updateURL(selectedCategory, selectedTags, featured);
     },
-    []
+    [updateURL, selectedCategory, selectedTags]
   );
 
   const handleReset = useCallback(() => {
     router.replace("/books", { scroll: false });
     setVisibleCount(INITIAL_VISIBLE);
-    setFeaturedOnly(false);
   }, [router]);
 
   // ─── 필터 + 정렬 로직 ────────────────────────────────────────────────────

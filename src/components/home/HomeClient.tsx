@@ -201,7 +201,7 @@ export default function HomeClient({
                 </h2>
               </div>
               <Link
-                href="/books"
+                href="/books?featured=true"
                 className="hidden md:inline-flex items-center gap-2 text-sm transition-colors duration-150"
                 style={{ color: "var(--text-muted)" }}
                 onMouseEnter={(e) =>
