@@ -36,6 +36,7 @@ interface AdminBook {
   isbn?: string;
   coverUrl?: string;
   coverImageUrl?: string;
+  images?: { assetId: string; url: string }[];
 }
 
 interface AdminClientProps {
@@ -78,6 +79,38 @@ function BookForm({
   const [publisher, setPublisher] = useState(editBook?.publisher || "");
   const [description, setDescription] = useState(editBook?.description || "");
   const [language, setLanguage] = useState(editBook?.language || "");
+
+  // 갤러리 이미지 상태
+  const [galleryImages, setGalleryImages] = useState<{ assetId: string; url: string }[]>(
+    editBook?.images || []
+  );
+  const [galleryUploading, setGalleryUploading] = useState(false);
+
+  async function handleGalleryUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setGalleryUploading(true);
+    try {
+      for (const file of Array.from(files)) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const result = await uploadImage(fd);
+        if (result.success && result.assetId && result.url) {
+          setGalleryImages((prev) => [...prev, { assetId: result.assetId!, url: result.url! }]);
+        }
+      }
+    } catch {
+      setError("갤러리 이미지 업로드에 실패했습니다.");
+    } finally {
+      setGalleryUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  function removeGalleryImage(index: number) {
+    setGalleryImages((prev) => prev.filter((_, i) => i !== index));
+  }
 
   async function handleISBNLookup() {
     if (!isbnValue.trim()) return;
@@ -141,6 +174,9 @@ function BookForm({
     formData.set("coverUrl", isbnCoverUrl);
     if (coverAssetId) {
       formData.set("coverImageAssetId", coverAssetId);
+    }
+    for (const img of galleryImages) {
+      formData.append("imageAssetIds", img.assetId);
     }
 
     startTransition(async () => {
@@ -440,6 +476,65 @@ function BookForm({
                 />
               </label>
             </div>
+          </div>
+
+          {/* 갤러리 이미지 */}
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+              갤러리 이미지
+            </span>
+            {galleryImages.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {galleryImages.map((img, idx) => (
+                  <div key={img.assetId} className="relative group">
+                    <div
+                      className="w-16 h-16 rounded-md overflow-hidden"
+                      style={{ backgroundColor: "var(--bg-tertiary)" }}
+                    >
+                      <img
+                        src={img.url}
+                        alt={`갤러리 ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(idx)}
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{
+                        backgroundColor: "var(--danger)",
+                        color: "#fff",
+                      }}
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <label
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg cursor-pointer transition-colors text-sm"
+              style={{
+                backgroundColor: "var(--bg-tertiary)",
+                border: "1px dashed var(--border)",
+                color: "var(--text-muted)",
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              {galleryUploading ? "업로드 중..." : "이미지 추가 (여러 장 선택 가능)"}
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleGalleryUpload}
+                disabled={galleryUploading}
+              />
+            </label>
           </div>
 
           {/* 설명 */}

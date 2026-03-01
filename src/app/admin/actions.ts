@@ -111,7 +111,8 @@ export async function getAdminBook(id: string) {
       format,
       isbn,
       coverUrl,
-      "coverImageUrl": coverImage.asset->url
+      "coverImageUrl": coverImage.asset->url,
+      "images": images[] { "assetId": asset._ref, "url": asset->url }
     }`,
     { id }
   );
@@ -138,6 +139,7 @@ export async function createBook(formData: FormData) {
   const coverImageAssetId = formData.get("coverImageAssetId") as string;
   const isbn = formData.get("isbn") as string;
   const coverUrl = formData.get("coverUrl") as string;
+  const imageAssetIds = formData.getAll("imageAssetIds") as string[];
 
   const slug = titleEn ? toSlug(titleEn) : toSlug(title);
 
@@ -168,6 +170,14 @@ export async function createBook(formData: FormData) {
     };
   }
 
+  if (imageAssetIds.length > 0) {
+    doc.images = imageAssetIds.map((id) => ({
+      _type: "image",
+      _key: id.replace(/^image-/, "").slice(0, 12),
+      asset: { _type: "reference", _ref: id },
+    }));
+  }
+
   await adminClient.create(doc);
   revalidatePath("/admin");
   revalidatePath("/books");
@@ -196,6 +206,7 @@ export async function updateBook(id: string, formData: FormData) {
   const coverImageAssetId = formData.get("coverImageAssetId") as string;
   const isbn = formData.get("isbn") as string;
   const coverUrl = formData.get("coverUrl") as string;
+  const imageAssetIds = formData.getAll("imageAssetIds") as string[];
 
   const updates: Record<string, unknown> = {
     title,
@@ -220,6 +231,14 @@ export async function updateBook(id: string, formData: FormData) {
       _type: "image",
       asset: { _type: "reference", _ref: coverImageAssetId },
     };
+  }
+
+  if (imageAssetIds.length > 0) {
+    updates.images = imageAssetIds.map((assetId) => ({
+      _type: "image",
+      _key: assetId.replace(/^image-/, "").slice(0, 12),
+      asset: { _type: "reference", _ref: assetId },
+    }));
   }
 
   await adminClient
