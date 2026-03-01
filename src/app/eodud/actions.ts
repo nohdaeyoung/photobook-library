@@ -72,7 +72,7 @@ export async function createCategory(formData: FormData) {
       order,
     });
 
-    revalidatePath("/admin");
+    revalidatePath("/eodud");
     revalidatePath("/books");
     revalidatePath("/");
     return { success: true as const };
@@ -109,7 +109,7 @@ export async function updateCategory(id: string, formData: FormData) {
       })
       .commit();
 
-    revalidatePath("/admin");
+    revalidatePath("/eodud");
     revalidatePath("/books");
     revalidatePath("/");
     return { success: true as const };
@@ -136,7 +136,7 @@ export async function deleteCategory(id: string) {
     }
 
     await adminClient.delete(id);
-    revalidatePath("/admin");
+    revalidatePath("/eodud");
     revalidatePath("/books");
     revalidatePath("/");
     return { success: true as const };
@@ -285,7 +285,7 @@ export async function createBook(formData: FormData) {
 
   const created = await adminClient.create(doc);
   const newSlug = (created.slug as { current: string })?.current;
-  revalidatePath("/admin");
+  revalidatePath("/eodud");
   revalidatePath("/books");
   if (newSlug) revalidatePath(`/books/${newSlug}`);
   revalidatePath("/");
@@ -358,7 +358,7 @@ export async function updateBook(id: string, formData: FormData) {
     `*[_type == "book" && _id == $id][0] { "slug": slug.current }`,
     { id }
   );
-  revalidatePath("/admin");
+  revalidatePath("/eodud");
   revalidatePath("/books");
   if (doc?.slug) revalidatePath(`/books/${doc.slug}`);
   revalidatePath("/");
@@ -368,7 +368,7 @@ export async function updateBook(id: string, formData: FormData) {
 // ─── 도서 삭제 ───
 export async function deleteBook(id: string) {
   await adminClient.delete(id);
-  revalidatePath("/admin");
+  revalidatePath("/eodud");
   revalidatePath("/books");
   revalidatePath("/");
   return { success: true };
