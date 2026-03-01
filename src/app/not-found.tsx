@@ -94,7 +94,7 @@ export default function NotFound() {
         className="mt-16 text-xs tracking-widest uppercase"
         style={{ color: "var(--text-muted)", opacity: 0.5 }}
       >
-        Photobook Library
+        Photobook & ArtBook Library
       </p>
     </div>
   );

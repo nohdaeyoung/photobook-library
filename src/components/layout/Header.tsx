@@ -74,7 +74,7 @@ export default function Header({ onSearchClick }: HeaderProps) {
               letterSpacing: "0.15em",
             }}
           >
-            PHOTOBOOK LIBRARY
+            PHOTOBOOK & ArtBook LIBRARY
           </Link>
 
           {/* 가운데 네비게이션 — md 이상에서만 표시 */}

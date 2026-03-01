@@ -24,8 +24,8 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "Photobook Library — 사진책 라이브러리",
-    template: "%s — Photobook Library",
+    default: "Photobook & ArtBook Library — 사진책 라이브러리",
+    template: "%s — Photobook & ArtBook Library",
   },
   description:
     "개인 소장 사진책 컬렉션을 온라인으로 감상하세요. 다큐멘터리, 포트레이트, 풍경, 스트리트 등 다양한 장르의 사진책을 탐색할 수 있습니다.",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ko_KR",
-    siteName: "Photobook Library",
+    siteName: "Photobook & ArtBook Library",
   },
 };
 

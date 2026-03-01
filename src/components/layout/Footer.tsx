@@ -75,7 +75,7 @@ export default function Footer() {
                 letterSpacing: "0.15em",
               }}
             >
-              PHOTOBOOK LIBRARY
+              PHOTOBOOK & ArtBook LIBRARY
             </Link>
             <p
               className="text-sm leading-relaxed max-w-xs"
@@ -183,7 +183,7 @@ export default function Footer() {
             className="text-xs text-center"
             style={{ color: "var(--text-muted)" }}
           >
-            &copy; {new Date().getFullYear()} Photobook Library. All rights reserved.
+            &copy; {new Date().getFullYear()} Photobook & ArtBook Library. All rights reserved.
           </p>
           <p
             className="text-xs text-center"

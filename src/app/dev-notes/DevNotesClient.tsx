@@ -85,7 +85,7 @@ const DEV_NOTES: DevNote[] = [
       },
       {
         type: "feat",
-        title: "Photobook Library MVP 구현",
+        title: "Photobook & ArtBook Library MVP 구현",
         description:
           "Next.js 기반 사진책 라이브러리 프로젝트 초기 구현. 홈, 컬렉션, 상세, 검색, 소개 페이지 포함",
       },
@@ -137,7 +137,7 @@ export default function DevNotesClient() {
             개발노트
           </h1>
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            Photobook Library 개발 과정을 일자별로 정리한 기록입니다.
+            Photobook & ArtBook Library 개발 과정을 일자별로 정리한 기록입니다.
           </p>
         </section>
 
