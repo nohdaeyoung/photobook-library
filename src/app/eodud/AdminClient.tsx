@@ -23,6 +23,8 @@ interface Category {
 
 interface AdminBook {
   _id: string;
+  _createdAt: string;
+  _updatedAt: string;
   title: string;
   titleEn?: string;
   slug: string;
@@ -1162,7 +1164,7 @@ export default function AdminClient({ initialBooks, categories: initialCategorie
                 <table className="w-full text-sm">
                   <thead>
                     <tr style={{ borderBottom: "1px solid var(--border)" }}>
-                      {["제목", "작가", "연도", "카테고리", "추천", ""].map(
+                      {["제목", "작가", "연도", "카테고리", "추천", "생성일", "수정일", ""].map(
                         (h) => (
                           <th
                             key={h}
@@ -1235,6 +1237,18 @@ export default function AdminClient({ initialBooks, categories: initialCategorie
                             <span style={{ color: "var(--accent)" }}>★</span>
                           )}
                         </td>
+                        <td
+                          className="px-4 py-3 text-xs tabular-nums whitespace-nowrap"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {new Date(book._createdAt).toLocaleDateString("ko-KR")}
+                        </td>
+                        <td
+                          className="px-4 py-3 text-xs tabular-nums whitespace-nowrap"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {new Date(book._updatedAt).toLocaleDateString("ko-KR")}
+                        </td>
                         <td className="px-4 py-3">
                           <div className="flex gap-2 justify-end">
                             <button
@@ -1268,7 +1282,7 @@ export default function AdminClient({ initialBooks, categories: initialCategorie
                     {filteredBooks.length === 0 && (
                       <tr>
                         <td
-                          colSpan={6}
+                          colSpan={8}
                           className="text-center py-12"
                           style={{ color: "var(--text-muted)" }}
                         >

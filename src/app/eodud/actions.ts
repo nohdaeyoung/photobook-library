@@ -172,6 +172,8 @@ export async function getAdminBooks() {
   return adminClient.fetch(
     `*[_type == "book"] | order(_createdAt desc) {
       _id,
+      _createdAt,
+      _updatedAt,
       title,
       titleEn,
       "slug": slug.current,
