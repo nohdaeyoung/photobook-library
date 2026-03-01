@@ -1241,13 +1241,13 @@ export default function AdminClient({ initialBooks, categories: initialCategorie
                           className="px-4 py-3 text-xs tabular-nums whitespace-nowrap"
                           style={{ color: "var(--text-muted)" }}
                         >
-                          {new Date(book._createdAt).toLocaleDateString("ko-KR")}
+                          {new Date(book._createdAt).toLocaleString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
                         </td>
                         <td
                           className="px-4 py-3 text-xs tabular-nums whitespace-nowrap"
                           style={{ color: "var(--text-muted)" }}
                         >
-                          {new Date(book._updatedAt).toLocaleDateString("ko-KR")}
+                          {new Date(book._updatedAt).toLocaleString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex gap-2 justify-end">
