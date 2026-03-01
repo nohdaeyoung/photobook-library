@@ -5,6 +5,8 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import ImageExtension from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
+import EmbedExtension from "./EmbedExtension";
+import { parseEmbedUrl } from "@/lib/embed-utils";
 
 interface RichTextEditorProps {
   value?: string;
@@ -46,6 +48,7 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
       }),
       Link.configure({ openOnClick: false }),
       ImageExtension,
+      EmbedExtension,
       Placeholder.configure({
         placeholder: "사진책에 대한 상세 내용을 작성하세요...",
       }),
@@ -77,6 +80,22 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
     }
+  }
+
+  function handleEmbed() {
+    if (!editor) return;
+    const url = window.prompt("임베드할 URL을 입력하세요 (YouTube, Vimeo, Twitter, Instagram, TikTok):");
+    if (!url) return;
+    const info = parseEmbedUrl(url);
+    if (!info) {
+      window.alert("지원하지 않는 URL 형식입니다.");
+      return;
+    }
+    editor
+      .chain()
+      .focus()
+      .setEmbed({ service: info.service, embedId: info.embedId, embedUrl: info.url })
+      .run();
   }
 
   return (
@@ -185,6 +204,11 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
             <circle cx="8.5" cy="8.5" r="1.5" />
             <polyline points="21 15 16 10 5 21" />
+          </svg>
+        </ToolbarButton>
+        <ToolbarButton onClick={handleEmbed} active={false} title="임베드">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polygon points="5 3 19 12 5 21 5 3" />
           </svg>
         </ToolbarButton>
 
