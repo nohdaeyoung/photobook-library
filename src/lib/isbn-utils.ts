@@ -122,7 +122,43 @@ async function fetchFromOpenLibrary(isbn: string): Promise<ISBNBookData | null> 
   return result;
 }
 
-/** Google Books → Open Library 순서로 ISBN 조회 */
+async function fetchFromKakaoBooks(isbn: string): Promise<ISBNBookData | null> {
+  const apiKey = process.env.KAKAO_REST_API_KEY;
+  if (!apiKey) return null;
+
+  const url = `https://dapi.kakao.com/v3/search/book?query=${isbn}&target=isbn`;
+  const res = await fetch(url, {
+    cache: "no-store",
+    headers: { Authorization: `KakaoAK ${apiKey}` },
+  });
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  if (!data.documents || data.documents.length === 0) return null;
+
+  const doc = data.documents[0];
+
+  const dateMatch = (doc.datetime || "").match(/(\d{4})/);
+
+  const result: ISBNBookData = {
+    title: doc.title,
+    author: Array.isArray(doc.authors) ? doc.authors.join(", ") : doc.authors,
+    year: dateMatch ? parseInt(dateMatch[1]) : undefined,
+    publisher: doc.publisher,
+    description: doc.contents,
+    coverUrl: doc.thumbnail || undefined,
+  };
+
+  // 카카오 API는 ISBN에서 language 정보를 직접 제공하지 않음
+  // 979-11 또는 978-89로 시작하면 한국어로 추정
+  if (isbn.startsWith("9791") || isbn.startsWith("97889")) {
+    result.language = "ko";
+  }
+
+  return result;
+}
+
+/** Google Books → 카카오 → Open Library 순서로 ISBN 조회 */
 export async function fetchBookByISBN(rawISBN: string): Promise<ISBNBookData | null> {
   const isbn = validateISBN(rawISBN);
   if (!isbn) return null;
@@ -132,15 +168,23 @@ export async function fetchBookByISBN(rawISBN: string): Promise<ISBNBookData | n
     const result = await fetchFromGoogleBooks(isbn);
     if (result && result.title) return result;
   } catch {
-    // Google Books 실패 시 Open Library로 fallback
+    // fallback
   }
 
-  // 2차: Open Library API
+  // 2차: 카카오 책 검색 API
+  try {
+    const result = await fetchFromKakaoBooks(isbn);
+    if (result && result.title) return result;
+  } catch {
+    // fallback
+  }
+
+  // 3차: Open Library API
   try {
     const result = await fetchFromOpenLibrary(isbn);
     if (result && result.title) return result;
   } catch {
-    // Open Library도 실패
+    // 모두 실패
   }
 
   return null;
