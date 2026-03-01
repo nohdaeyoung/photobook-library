@@ -84,6 +84,7 @@ export async function getAdminBooks() {
       language,
       format,
       isbn,
+      coverUrl,
       "coverImageUrl": coverImage.asset->url
     }`
   );
@@ -109,6 +110,7 @@ export async function getAdminBook(id: string) {
       language,
       format,
       isbn,
+      coverUrl,
       "coverImageUrl": coverImage.asset->url
     }`,
     { id }
@@ -135,6 +137,7 @@ export async function createBook(formData: FormData) {
   const format = formData.get("format") as string;
   const coverImageAssetId = formData.get("coverImageAssetId") as string;
   const isbn = formData.get("isbn") as string;
+  const coverUrl = formData.get("coverUrl") as string;
 
   const slug = titleEn ? toSlug(titleEn) : toSlug(title);
 
@@ -155,6 +158,7 @@ export async function createBook(formData: FormData) {
     language: language || undefined,
     format: format || undefined,
     isbn: isbn || undefined,
+    coverUrl: coverUrl || undefined,
   };
 
   if (coverImageAssetId) {
@@ -191,6 +195,7 @@ export async function updateBook(id: string, formData: FormData) {
   const format = formData.get("format") as string;
   const coverImageAssetId = formData.get("coverImageAssetId") as string;
   const isbn = formData.get("isbn") as string;
+  const coverUrl = formData.get("coverUrl") as string;
 
   const updates: Record<string, unknown> = {
     title,
@@ -207,6 +212,7 @@ export async function updateBook(id: string, formData: FormData) {
     language: language || undefined,
     format: format || undefined,
     isbn: isbn || undefined,
+    coverUrl: coverUrl || undefined,
   };
 
   if (coverImageAssetId) {

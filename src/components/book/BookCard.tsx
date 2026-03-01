@@ -39,6 +39,7 @@ export function BookCard({ book, priority = false, size = "md" }: BookCardProps)
   const styles = sizeStyles[size];
   const displayTags = book.tags.slice(0, 3);
   const hasCover = Boolean(book.coverImage?.src);
+  const hasCoverUrl = Boolean(!hasCover && book.coverUrl);
 
   return (
     <Link
@@ -75,6 +76,16 @@ export function BookCard({ book, priority = false, size = "md" }: BookCardProps)
             priority={priority}
             placeholder={book.coverImage.blurDataURL ? "blur" : "empty"}
             blurDataURL={book.coverImage.blurDataURL}
+          />
+        ) : hasCoverUrl ? (
+          <img
+            src={book.coverUrl}
+            alt={book.title}
+            className={cn(
+              "absolute inset-0 w-full h-full object-cover",
+              "transition-transform duration-[250ms] ease-[ease]",
+              "group-hover:scale-[1.03]",
+            )}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-[var(--bg-tertiary)]">

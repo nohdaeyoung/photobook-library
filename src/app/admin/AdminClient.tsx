@@ -34,6 +34,7 @@ interface AdminBook {
   language?: string;
   format?: string;
   isbn?: string;
+  coverUrl?: string;
   coverImageUrl?: string;
 }
 
@@ -56,8 +57,9 @@ function BookForm({
 }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [coverPreview, setCoverPreview] = useState<string | null>(editBook?.coverImageUrl || null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(editBook?.coverImageUrl || editBook?.coverUrl || null);
   const [coverAssetId, setCoverAssetId] = useState<string | null>(null);
+  const [isbnCoverUrl, setIsbnCoverUrl] = useState<string>(editBook?.coverUrl || "");
   const [uploading, setUploading] = useState(false);
   const [contentHtml, setContentHtml] = useState(editBook?.content || "");
   const isEdit = Boolean(editBook);
@@ -93,7 +95,10 @@ function BookForm({
         if (d.publisher) setPublisher(d.publisher);
         if (d.description) setDescription(d.description);
         if (d.language) setLanguage(d.language);
-        if (d.coverUrl) setCoverPreview(d.coverUrl);
+        if (d.coverUrl) {
+          setCoverPreview(d.coverUrl);
+          setIsbnCoverUrl(d.coverUrl);
+        }
         setIsbnMessage({ type: "success", text: "도서 정보를 불러왔습니다." });
       } else {
         setIsbnMessage({ type: "error", text: result.error });
@@ -133,6 +138,7 @@ function BookForm({
     const formData = new FormData(e.currentTarget);
     formData.set("content", contentHtml);
     formData.set("isbn", isbnValue.trim());
+    formData.set("coverUrl", isbnCoverUrl);
     if (coverAssetId) {
       formData.set("coverImageAssetId", coverAssetId);
     }

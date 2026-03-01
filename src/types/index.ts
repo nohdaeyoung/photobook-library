@@ -21,6 +21,7 @@ export interface PhotoBook {
   description: string;
   content?: string;
   coverImage: ImageAsset;
+  coverUrl?: string;
   images: ImageAsset[];
   featured?: boolean;
   publisher?: string;

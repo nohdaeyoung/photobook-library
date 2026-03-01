@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface BookCoverProps {
   image: ImageAsset | null | undefined;
+  coverUrl?: string;
   priority?: boolean;
   sizes?: string;
   className?: string;
@@ -11,10 +12,29 @@ interface BookCoverProps {
 
 export function BookCover({
   image,
+  coverUrl,
   priority = false,
   sizes = "(max-width: 768px) 100vw, 50vw",
   className,
 }: BookCoverProps) {
+  if (!image?.src && coverUrl) {
+    return (
+      <div
+        className={cn(
+          "relative aspect-[3/4] overflow-hidden rounded-lg",
+          "bg-[var(--bg-tertiary)]",
+          className,
+        )}
+      >
+        <img
+          src={coverUrl}
+          alt="표지"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
   if (!image?.src) {
     return (
       <div

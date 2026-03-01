@@ -28,6 +28,7 @@ const bookProjection = `{
   featured,
   publisher,
   isbn,
+  coverUrl,
   language,
   format
 }`;

@@ -116,6 +116,12 @@ export default defineType({
       type: "string",
     }),
     defineField({
+      name: "coverUrl",
+      title: "외부 표지 URL",
+      type: "url",
+      description: "ISBN 조회로 가져온 외부 표지 이미지 URL (coverImage 미등록 시 사용)",
+    }),
+    defineField({
       name: "language",
       title: "언어",
       type: "string",
