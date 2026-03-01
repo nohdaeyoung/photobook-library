@@ -232,9 +232,9 @@ export default function HomeClient({
 
             {/* 북 카드 그리드 */}
             {featuredBooks.length > 0 ? (
-              <div className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 scrollbar-hide">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {featuredBooks.map((book, index) => (
-                  <div key={book.id} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px]">
+                  <div key={book.id} className="flex justify-center">
                     <BookCard book={book} priority={index < 4} size="md" />
                   </div>
                 ))}
@@ -387,9 +387,9 @@ export default function HomeClient({
 
             {/* 북 카드 그리드 */}
             {recentBooks.length > 0 ? (
-              <div className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 scrollbar-hide">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {recentBooks.map((book) => (
-                  <div key={book.id} className="flex-shrink-0 w-[160px] sm:w-[180px] md:w-[200px]">
+                  <div key={book.id} className="flex justify-center">
                     <BookCard book={book} size="md" />
                   </div>
                 ))}
