@@ -52,10 +52,13 @@ export async function fetchBookDataByISBN(
   try {
     const data = await fetchBookByISBN(isbn);
     if (!data) {
+      console.log(`[ISBN] No data found for ISBN: ${isbn}`);
       return { success: false, error: "해당 ISBN의 도서 정보를 찾을 수 없습니다." };
     }
+    console.log(`[ISBN] Found: ${data.title} for ISBN: ${isbn}`);
     return { success: true, data };
-  } catch {
+  } catch (err) {
+    console.error(`[ISBN] Error fetching ISBN ${isbn}:`, err);
     return { success: false, error: "도서 정보 조회 중 오류가 발생했습니다." };
   }
 }

@@ -32,7 +32,7 @@ function mapLanguageCode(lang: string | undefined): string {
 
 async function fetchFromGoogleBooks(isbn: string): Promise<ISBNBookData | null> {
   const url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return null;
 
   const data = await res.json();
@@ -68,7 +68,7 @@ async function fetchFromGoogleBooks(isbn: string): Promise<ISBNBookData | null> 
 
 async function fetchFromOpenLibrary(isbn: string): Promise<ISBNBookData | null> {
   const url = `https://openlibrary.org/isbn/${isbn}.json`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return null;
 
   const data = await res.json();
@@ -90,7 +90,7 @@ async function fetchFromOpenLibrary(isbn: string): Promise<ISBNBookData | null> 
       const authorNames = await Promise.all(
         authorKeys.slice(0, 3).map(async (key: string) => {
           const authorRes = await fetch(`https://openlibrary.org${key}.json`, {
-            signal: AbortSignal.timeout(5000),
+            cache: "no-store",
           });
           if (!authorRes.ok) return null;
           const authorData = await authorRes.json();
