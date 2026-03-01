@@ -91,21 +91,28 @@ function BookForm({
     if (!files || files.length === 0) return;
 
     setGalleryUploading(true);
-    try {
-      for (const file of Array.from(files)) {
+    setError(null);
+    const fileArray = Array.from(files);
+    for (const file of fileArray) {
+      try {
         const fd = new FormData();
         fd.append("file", file);
         const result = await uploadImage(fd);
-        if (result.success && result.assetId && result.url) {
-          setGalleryImages((prev) => [...prev, { assetId: result.assetId!, url: result.url! }]);
+        if (result.success && result.assetId) {
+          setGalleryImages((prev) => [
+            ...prev,
+            { assetId: result.assetId!, url: result.url || "" },
+          ]);
+        } else {
+          setError(`"${file.name}" 업로드 실패: ${result.error || "알 수 없는 오류"}`);
         }
+      } catch (err) {
+        setError(`"${file.name}" 업로드 중 오류가 발생했습니다.`);
+        console.error("Gallery upload error:", err);
       }
-    } catch {
-      setError("갤러리 이미지 업로드에 실패했습니다.");
-    } finally {
-      setGalleryUploading(false);
-      e.target.value = "";
     }
+    setGalleryUploading(false);
+    e.target.value = "";
   }
 
   function removeGalleryImage(index: number) {

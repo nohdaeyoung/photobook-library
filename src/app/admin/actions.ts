@@ -8,20 +8,25 @@ import { fetchBookByISBN, validateISBN, type ISBNBookData } from "@/lib/isbn-uti
 export async function uploadImage(formData: FormData) {
   const file = formData.get("file") as File;
   if (!file || file.size === 0) {
-    return { success: false, error: "파일이 없습니다" };
+    return { success: false as const, error: "파일이 없습니다" };
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const asset = await adminClient.assets.upload("image", buffer, {
-    filename: file.name,
-    contentType: file.type,
-  });
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const asset = await adminClient.assets.upload("image", buffer, {
+      filename: file.name,
+      contentType: file.type,
+    });
 
-  return {
-    success: true,
-    assetId: asset._id,
-    url: asset.url,
-  };
+    return {
+      success: true as const,
+      assetId: asset._id,
+      url: asset.url,
+    };
+  } catch (err) {
+    console.error("[Upload] Failed:", err);
+    return { success: false as const, error: "이미지 업로드에 실패했습니다." };
+  }
 }
 
 // 슬러그 생성 유틸
