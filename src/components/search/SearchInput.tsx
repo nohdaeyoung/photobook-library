@@ -1,0 +1,125 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { cn } from "@/lib/utils";
+
+interface SearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  autoFocus?: boolean;
+}
+
+export default function SearchInput({
+  value,
+  onChange,
+  placeholder = "제목, 작가, 태그 검색...",
+  autoFocus = false,
+}: SearchInputProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [focused, setFocused] = useState(false);
+
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      const timer = setTimeout(() => inputRef.current?.focus(), 80);
+      return () => clearTimeout(timer);
+    }
+  }, [autoFocus]);
+
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-3 w-full px-4 py-3 rounded-xl",
+        "transition-all duration-200",
+      )}
+      style={{
+        backgroundColor: "var(--bg-secondary, #1A1A17)",
+        border: `1.5px solid ${
+          focused
+            ? "var(--accent, #E0C080)"
+            : "rgba(255,255,255,0.08)"
+        }`,
+      }}
+    >
+      {/* Magnifier icon */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="flex-shrink-0 transition-colors duration-200"
+        style={{
+          color: focused
+            ? "var(--accent, #E0C080)"
+            : "var(--text-muted, rgba(245,245,240,0.4))",
+        }}
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+
+      {/* Input */}
+      <input
+        ref={inputRef}
+        type="search"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder={placeholder}
+        autoComplete="off"
+        spellCheck={false}
+        className={cn(
+          "flex-1 bg-transparent outline-none text-base leading-tight",
+          "[&::-webkit-search-cancel-button]:hidden",
+          "[&::-webkit-search-decoration]:hidden",
+          "placeholder:text-[rgba(245,245,240,0.3)]",
+        )}
+        style={{
+          color: "var(--text-primary, #F5F5F0)",
+          caretColor: "var(--accent, #E0C080)",
+        }}
+      />
+
+      {/* Clear button */}
+      {value.length > 0 && (
+        <button
+          type="button"
+          onClick={() => {
+            onChange("");
+            inputRef.current?.focus();
+          }}
+          aria-label="검색어 지우기"
+          className={cn(
+            "flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0",
+            "transition-colors duration-150",
+            "hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+          )}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ color: "var(--text-muted, rgba(245,245,240,0.5))" }}
+            aria-hidden="true"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      )}
+    </div>
+  );
+}

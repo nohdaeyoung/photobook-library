@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#2b2b2b"/>
+
+  <!-- 장식선 상단 -->
+  <line x1="80" y1="80" x2="520" y2="80" stroke="#d4a574" stroke-width="1" opacity="0.6"/>
+
+  <!-- 장식선 하단 -->
+  <line x1="80" y1="720" x2="520" y2="720" stroke="#d4a574" stroke-width="1" opacity="0.6"/>
+
+  <!-- 연도 -->
+  <text x="300" y="140" text-anchor="middle" fill="#d4a574" font-family="Georgia, serif" font-size="18" letter-spacing="6" opacity="0.8">1992</text>
+
+  <!-- 장식 요소 -->
+  <rect x="270" y="170" width="60" height="2" fill="#d4a574" opacity="0.4"/>
+
+  <!-- 타이틀 -->
+  <g>
+    <text x="300" y="340" text-anchor="middle" fill="#f0f0f0" font-family="Georgia, serif" font-size="42" font-weight="bold">Immediate</text>
+    <text x="300" y="392" text-anchor="middle" fill="#f0f0f0" font-family="Georgia, serif" font-size="42" font-weight="bold">Family</text>
+  </g>
+
+  <!-- 구분선 -->
+  <rect x="240" y="464" width="120" height="1" fill="#d4a574" opacity="0.5"/>
+
+  <!-- 작가 -->
+  <text x="300" y="509" text-anchor="middle" fill="#f0f0f0" font-family="Georgia, serif" font-size="20" opacity="0.7">Sally Mann</text>
+
+  <!-- 하단 장식 -->
+  <rect x="290" y="680" width="20" height="2" fill="#d4a574" opacity="0.4"/>
+</svg>
