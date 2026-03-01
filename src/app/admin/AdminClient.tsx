@@ -122,6 +122,16 @@ function BookForm({
     setGalleryImages((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function moveGalleryImage(index: number, direction: "up" | "down") {
+    setGalleryImages((prev) => {
+      const next = [...prev];
+      const targetIndex = direction === "up" ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= next.length) return prev;
+      [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+      return next;
+    });
+  }
+
   async function handleISBNLookup() {
     if (!isbnValue.trim()) return;
     setIsbnLoading(true);
@@ -494,12 +504,19 @@ function BookForm({
               갤러리 이미지
             </span>
             {galleryImages.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-2">
+              <div className="flex flex-col gap-2 mb-2">
                 {galleryImages.map((img, idx) => (
-                  <div key={img.assetId} className="relative group">
+                  <div
+                    key={`${img.assetId}-${idx}`}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg"
+                    style={{
+                      backgroundColor: "var(--bg-tertiary)",
+                      border: "1px solid var(--border)",
+                    }}
+                  >
                     <div
-                      className="w-16 h-16 rounded-md overflow-hidden"
-                      style={{ backgroundColor: "var(--bg-tertiary)" }}
+                      className="w-12 h-12 rounded-md overflow-hidden flex-shrink-0"
+                      style={{ backgroundColor: "var(--bg-primary)" }}
                     >
                       <img
                         src={img.url}
@@ -507,17 +524,52 @@ function BookForm({
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeGalleryImage(idx)}
-                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{
-                        backgroundColor: "var(--danger)",
-                        color: "#fff",
-                      }}
-                    >
-                      x
-                    </button>
+                    <span className="flex-1 text-xs tabular-nums" style={{ color: "var(--text-muted)" }}>
+                      {idx + 1} / {galleryImages.length}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => moveGalleryImage(idx, "up")}
+                        disabled={idx === 0}
+                        className="w-7 h-7 rounded flex items-center justify-center text-xs transition-colors"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          color: idx === 0 ? "var(--text-muted)" : "var(--text-primary)",
+                          border: "1px solid var(--border)",
+                        }}
+                        title="위로 이동"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveGalleryImage(idx, "down")}
+                        disabled={idx === galleryImages.length - 1}
+                        className="w-7 h-7 rounded flex items-center justify-center text-xs transition-colors"
+                        style={{
+                          backgroundColor: "var(--bg-secondary)",
+                          color: idx === galleryImages.length - 1 ? "var(--text-muted)" : "var(--text-primary)",
+                          border: "1px solid var(--border)",
+                        }}
+                        title="아래로 이동"
+                      >
+                        ↓
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeGalleryImage(idx)}
+                        className="w-7 h-7 rounded flex items-center justify-center text-xs transition-colors"
+                        style={{
+                          backgroundColor: "rgba(229,62,62,0.1)",
+                          color: "var(--danger)",
+                          border: "1px solid rgba(229,62,62,0.2)",
+                        }}
+                        title="삭제"
+                      >
+                        ✕
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

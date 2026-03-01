@@ -90,7 +90,8 @@ export async function getAdminBooks() {
       format,
       isbn,
       coverUrl,
-      "coverImageUrl": coverImage.asset->url
+      "coverImageUrl": coverImage.asset->url,
+      "images": images[] { "assetId": asset._ref, "url": asset->url }
     }`
   );
 }
