@@ -261,6 +261,82 @@ export function BookDetailClient({
             </div>
           </section>
 
+          {/* ── 상세 컨텐츠 섹션 ──────────────────────────────────── */}
+          {book.content && (
+            <section className="mb-16" aria-label="상세 내용">
+              <div className="flex items-center gap-3 mb-6">
+                <h2
+                  className="text-xl font-medium"
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  상세 내용
+                </h2>
+                <div
+                  className="flex-1 h-px"
+                  style={{ backgroundColor: "var(--border)" }}
+                />
+              </div>
+              <div
+                className="prose-content"
+                dangerouslySetInnerHTML={{ __html: book.content }}
+              />
+              <style>{`
+                .prose-content {
+                  color: var(--text-secondary);
+                  font-family: var(--font-body);
+                  font-size: 15px;
+                  line-height: 1.8;
+                }
+                .prose-content h2 {
+                  font-family: var(--font-heading);
+                  font-size: 1.3em;
+                  font-weight: 700;
+                  margin: 1.5em 0 0.5em;
+                  color: var(--text-primary);
+                }
+                .prose-content h3 {
+                  font-family: var(--font-heading);
+                  font-size: 1.1em;
+                  font-weight: 600;
+                  margin: 1.2em 0 0.4em;
+                  color: var(--text-primary);
+                }
+                .prose-content p { margin: 0.75em 0; }
+                .prose-content strong { font-weight: 700; color: var(--text-primary); }
+                .prose-content em { font-style: italic; }
+                .prose-content ul, .prose-content ol {
+                  padding-left: 1.5em;
+                  margin: 0.75em 0;
+                }
+                .prose-content li { margin: 0.3em 0; }
+                .prose-content blockquote {
+                  border-left: 3px solid var(--accent);
+                  padding-left: 1em;
+                  margin: 1em 0;
+                  color: var(--text-muted);
+                  font-style: italic;
+                }
+                .prose-content a {
+                  color: var(--accent);
+                  text-decoration: underline;
+                }
+                .prose-content img {
+                  max-width: 100%;
+                  border-radius: 8px;
+                  margin: 1.5em 0;
+                }
+                .prose-content hr {
+                  border: none;
+                  border-top: 1px solid var(--border);
+                  margin: 2em 0;
+                }
+              `}</style>
+            </section>
+          )}
+
           {/* ── 이미지 갤러리 섹션 ──────────────────────────────────── */}
           {hasGallery && (
             <section className="mb-16" aria-label="미리보기 갤러리">

@@ -12,6 +12,7 @@ const bookProjection = `{
   "category": category->slug.current,
   tags,
   description,
+  content,
   "coverImage": coverImage {
     "src": asset->url,
     "width": asset->metadata.dimensions.width,

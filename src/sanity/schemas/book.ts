@@ -57,9 +57,16 @@ export default defineType({
     }),
     defineField({
       name: "description",
-      title: "설명",
+      title: "간단 설명",
       type: "text",
       rows: 4,
+      description: "목록 페이지에 표시되는 짧은 설명",
+    }),
+    defineField({
+      name: "content",
+      title: "상세 컨텐츠",
+      type: "text",
+      description: "상세 페이지에 표시되는 HTML 컨텐츠 (리치 텍스트 에디터로 작성)",
     }),
     defineField({
       name: "coverImage",

@@ -3,6 +3,26 @@
 import { adminClient } from "@/sanity/admin-client";
 import { revalidatePath } from "next/cache";
 
+// ─── 이미지 업로드 ───
+export async function uploadImage(formData: FormData) {
+  const file = formData.get("file") as File;
+  if (!file || file.size === 0) {
+    return { success: false, error: "파일이 없습니다" };
+  }
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const asset = await adminClient.assets.upload("image", buffer, {
+    filename: file.name,
+    contentType: file.type,
+  });
+
+  return {
+    success: true,
+    assetId: asset._id,
+    url: asset.url,
+  };
+}
+
 // 슬러그 생성 유틸
 function toSlug(str: string): string {
   return str
@@ -36,6 +56,7 @@ export async function getAdminBooks() {
       "categorySlug": category->slug.current,
       tags,
       description,
+      content,
       featured,
       publisher,
       language,
@@ -59,10 +80,12 @@ export async function getAdminBook(id: string) {
       "categoryId": category._ref,
       tags,
       description,
+      content,
       featured,
       publisher,
       language,
-      format
+      format,
+      "coverImageUrl": coverImage.asset->url
     }`,
     { id }
   );
@@ -81,15 +104,17 @@ export async function createBook(formData: FormData) {
     .map((t) => t.trim())
     .filter(Boolean);
   const description = formData.get("description") as string;
+  const content = formData.get("content") as string;
   const featured = formData.get("featured") === "on";
   const publisher = formData.get("publisher") as string;
   const language = formData.get("language") as string;
   const format = formData.get("format") as string;
+  const coverImageAssetId = formData.get("coverImageAssetId") as string;
 
   const slug = titleEn ? toSlug(titleEn) : toSlug(title);
 
-  const doc = {
-    _type: "book" as const,
+  const doc: { _type: string; [key: string]: unknown } = {
+    _type: "book",
     title,
     titleEn: titleEn || undefined,
     slug: { _type: "slug" as const, current: slug },
@@ -99,11 +124,19 @@ export async function createBook(formData: FormData) {
     category: { _type: "reference" as const, _ref: categoryId },
     tags,
     description: description || undefined,
+    content: content || undefined,
     featured,
     publisher: publisher || undefined,
     language: language || undefined,
     format: format || undefined,
   };
+
+  if (coverImageAssetId) {
+    doc.coverImage = {
+      _type: "image",
+      asset: { _type: "reference", _ref: coverImageAssetId },
+    };
+  }
 
   await adminClient.create(doc);
   revalidatePath("/admin");
@@ -125,27 +158,39 @@ export async function updateBook(id: string, formData: FormData) {
     .map((t) => t.trim())
     .filter(Boolean);
   const description = formData.get("description") as string;
+  const content = formData.get("content") as string;
   const featured = formData.get("featured") === "on";
   const publisher = formData.get("publisher") as string;
   const language = formData.get("language") as string;
   const format = formData.get("format") as string;
+  const coverImageAssetId = formData.get("coverImageAssetId") as string;
+
+  const updates: Record<string, unknown> = {
+    title,
+    titleEn: titleEn || undefined,
+    author,
+    year,
+    pages,
+    category: { _type: "reference" as const, _ref: categoryId },
+    tags,
+    description: description || undefined,
+    content: content || undefined,
+    featured,
+    publisher: publisher || undefined,
+    language: language || undefined,
+    format: format || undefined,
+  };
+
+  if (coverImageAssetId) {
+    updates.coverImage = {
+      _type: "image",
+      asset: { _type: "reference", _ref: coverImageAssetId },
+    };
+  }
 
   await adminClient
     .patch(id)
-    .set({
-      title,
-      titleEn: titleEn || undefined,
-      author,
-      year,
-      pages,
-      category: { _type: "reference" as const, _ref: categoryId },
-      tags,
-      description: description || undefined,
-      featured,
-      publisher: publisher || undefined,
-      language: language || undefined,
-      format: format || undefined,
-    })
+    .set(updates)
     .commit();
 
   revalidatePath("/admin");

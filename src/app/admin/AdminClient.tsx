@@ -2,7 +2,10 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { createBook, updateBook, deleteBook, getAdminBooks } from "./actions";
+import dynamic from "next/dynamic";
+import { createBook, updateBook, deleteBook, getAdminBooks, uploadImage } from "./actions";
+
+const RichTextEditor = dynamic(() => import("./RichTextEditor"), { ssr: false });
 
 interface Category {
   _id: string;
@@ -25,6 +28,7 @@ interface AdminBook {
   categorySlug: string;
   tags: string[];
   description?: string;
+  content?: string;
   featured: boolean;
   publisher?: string;
   language?: string;
@@ -51,12 +55,42 @@ function BookForm({
 }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(editBook?.coverImageUrl || null);
+  const [coverAssetId, setCoverAssetId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [contentHtml, setContentHtml] = useState(editBook?.content || "");
   const isEdit = Boolean(editBook);
+
+  async function handleCoverUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setCoverPreview(URL.createObjectURL(file));
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const result = await uploadImage(fd);
+      if (result.success && result.assetId) {
+        setCoverAssetId(result.assetId);
+      } else {
+        setError("이미지 업로드에 실패했습니다.");
+      }
+    } catch {
+      setError("이미지 업로드에 실패했습니다.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     const formData = new FormData(e.currentTarget);
+    formData.set("content", contentHtml);
+    if (coverAssetId) {
+      formData.set("coverImageAssetId", coverAssetId);
+    }
 
     startTransition(async () => {
       try {
@@ -261,6 +295,49 @@ function BookForm({
             />
           </label>
 
+          {/* 커버 이미지 */}
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+              표지 이미지
+            </span>
+            <div className="flex items-start gap-4">
+              {coverPreview && (
+                <div
+                  className="w-20 h-28 rounded-md overflow-hidden flex-shrink-0"
+                  style={{ backgroundColor: "var(--bg-tertiary)" }}
+                >
+                  <img
+                    src={coverPreview}
+                    alt="표지 미리보기"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <label
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg cursor-pointer transition-colors text-sm"
+                style={{
+                  backgroundColor: "var(--bg-tertiary)",
+                  border: "1px dashed var(--border)",
+                  color: "var(--text-muted)",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                {uploading ? "업로드 중..." : coverPreview ? "이미지 변경" : "이미지 선택"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleCoverUpload}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
+          </div>
+
           {/* 설명 */}
           <label className="flex flex-col gap-1">
             <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
@@ -278,6 +355,14 @@ function BookForm({
               }}
             />
           </label>
+
+          {/* 상세 컨텐츠 (리치 텍스트 에디터) */}
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+              상세 컨텐츠
+            </span>
+            <RichTextEditor value={contentHtml} onChange={setContentHtml} />
+          </div>
 
           {/* 출판사 / 언어 / 제본 */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
