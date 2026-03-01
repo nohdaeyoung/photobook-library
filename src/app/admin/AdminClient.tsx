@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { createBook, updateBook, deleteBook, getAdminBooks, uploadImage } from "./actions";
+import { createBook, updateBook, deleteBook, getAdminBooks, uploadImage, fetchBookDataByISBN } from "./actions";
 
 const RichTextEditor = dynamic(() => import("./RichTextEditor"), { ssr: false });
 
@@ -33,6 +33,7 @@ interface AdminBook {
   publisher?: string;
   language?: string;
   format?: string;
+  isbn?: string;
   coverImageUrl?: string;
 }
 
@@ -61,6 +62,49 @@ function BookForm({
   const [contentHtml, setContentHtml] = useState(editBook?.content || "");
   const isEdit = Boolean(editBook);
 
+  // ISBN 조회 상태
+  const [isbnValue, setIsbnValue] = useState(editBook?.isbn || "");
+  const [isbnLoading, setIsbnLoading] = useState(false);
+  const [isbnMessage, setIsbnMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Controlled 폼 필드 (ISBN 조회 결과로 업데이트 가능)
+  const [title, setTitle] = useState(editBook?.title || "");
+  const [titleEn, setTitleEn] = useState(editBook?.titleEn || "");
+  const [author, setAuthor] = useState(editBook?.author || "");
+  const [year, setYear] = useState(editBook?.year?.toString() || "");
+  const [pages, setPages] = useState(editBook?.pages?.toString() || "");
+  const [publisher, setPublisher] = useState(editBook?.publisher || "");
+  const [description, setDescription] = useState(editBook?.description || "");
+  const [language, setLanguage] = useState(editBook?.language || "");
+
+  async function handleISBNLookup() {
+    if (!isbnValue.trim()) return;
+    setIsbnLoading(true);
+    setIsbnMessage(null);
+    try {
+      const result = await fetchBookDataByISBN(isbnValue.trim());
+      if (result.success) {
+        const d = result.data;
+        if (d.title) setTitle(d.title);
+        if (d.titleEn) setTitleEn(d.titleEn);
+        if (d.author) setAuthor(d.author);
+        if (d.year) setYear(d.year.toString());
+        if (d.pages) setPages(d.pages.toString());
+        if (d.publisher) setPublisher(d.publisher);
+        if (d.description) setDescription(d.description);
+        if (d.language) setLanguage(d.language);
+        if (d.coverUrl) setCoverPreview(d.coverUrl);
+        setIsbnMessage({ type: "success", text: "도서 정보를 불러왔습니다." });
+      } else {
+        setIsbnMessage({ type: "error", text: result.error });
+      }
+    } catch {
+      setIsbnMessage({ type: "error", text: "조회 중 오류가 발생했습니다." });
+    } finally {
+      setIsbnLoading(false);
+    }
+  }
+
   async function handleCoverUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -88,6 +132,7 @@ function BookForm({
     setError(null);
     const formData = new FormData(e.currentTarget);
     formData.set("content", contentHtml);
+    formData.set("isbn", isbnValue.trim());
     if (coverAssetId) {
       formData.set("coverImageAssetId", coverAssetId);
     }
@@ -161,6 +206,54 @@ function BookForm({
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* ISBN 조회 */}
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+              ISBN
+            </span>
+            <div className="flex gap-2">
+              <input
+                value={isbnValue}
+                onChange={(e) => setIsbnValue(e.target.value)}
+                placeholder="978-0-7148-7935-2"
+                className="flex-1 px-3 py-2 rounded-lg text-sm"
+                style={{
+                  backgroundColor: "var(--bg-tertiary)",
+                  border: "1px solid var(--border)",
+                  color: "var(--text-primary)",
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleISBNLookup();
+                  }
+                }}
+              />
+              <button
+                type="button"
+                onClick={handleISBNLookup}
+                disabled={isbnLoading || !isbnValue.trim()}
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+                style={{
+                  backgroundColor: isbnLoading ? "var(--text-muted)" : "var(--accent)",
+                  color: "#0D0D0D",
+                }}
+              >
+                {isbnLoading ? "조회 중..." : "조회"}
+              </button>
+            </div>
+            {isbnMessage && (
+              <span
+                className="text-xs mt-1"
+                style={{
+                  color: isbnMessage.type === "success" ? "var(--accent)" : "var(--danger)",
+                }}
+              >
+                {isbnMessage.text}
+              </span>
+            )}
+          </div>
+
           {/* 제목 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label className="flex flex-col gap-1">
@@ -170,7 +263,8 @@ function BookForm({
               <input
                 name="title"
                 required
-                defaultValue={editBook?.title}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 className="px-3 py-2 rounded-lg text-sm"
                 style={{
                   backgroundColor: "var(--bg-tertiary)",
@@ -185,7 +279,8 @@ function BookForm({
               </span>
               <input
                 name="titleEn"
-                defaultValue={editBook?.titleEn}
+                value={titleEn}
+                onChange={(e) => setTitleEn(e.target.value)}
                 className="px-3 py-2 rounded-lg text-sm"
                 style={{
                   backgroundColor: "var(--bg-tertiary)",
@@ -205,7 +300,8 @@ function BookForm({
               <input
                 name="author"
                 required
-                defaultValue={editBook?.author}
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
                 className="px-3 py-2 rounded-lg text-sm"
                 style={{
                   backgroundColor: "var(--bg-tertiary)",
@@ -224,7 +320,8 @@ function BookForm({
                 required
                 min={1800}
                 max={2100}
-                defaultValue={editBook?.year}
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
                 className="px-3 py-2 rounded-lg text-sm"
                 style={{
                   backgroundColor: "var(--bg-tertiary)",
@@ -241,7 +338,8 @@ function BookForm({
                 name="pages"
                 type="number"
                 min={1}
-                defaultValue={editBook?.pages}
+                value={pages}
+                onChange={(e) => setPages(e.target.value)}
                 className="px-3 py-2 rounded-lg text-sm"
                 style={{
                   backgroundColor: "var(--bg-tertiary)",
@@ -346,7 +444,8 @@ function BookForm({
             <textarea
               name="description"
               rows={3}
-              defaultValue={editBook?.description}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="px-3 py-2 rounded-lg text-sm resize-y"
               style={{
                 backgroundColor: "var(--bg-tertiary)",
@@ -372,7 +471,8 @@ function BookForm({
               </span>
               <input
                 name="publisher"
-                defaultValue={editBook?.publisher}
+                value={publisher}
+                onChange={(e) => setPublisher(e.target.value)}
                 className="px-3 py-2 rounded-lg text-sm"
                 style={{
                   backgroundColor: "var(--bg-tertiary)",
@@ -387,7 +487,8 @@ function BookForm({
               </span>
               <select
                 name="language"
-                defaultValue={editBook?.language}
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
                 className="px-3 py-2 rounded-lg text-sm"
                 style={{
                   backgroundColor: "var(--bg-tertiary)",

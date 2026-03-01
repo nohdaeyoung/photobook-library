@@ -2,6 +2,7 @@
 
 import { adminClient } from "@/sanity/admin-client";
 import { revalidatePath } from "next/cache";
+import { fetchBookByISBN, validateISBN, type ISBNBookData } from "@/lib/isbn-utils";
 
 // ─── 이미지 업로드 ───
 export async function uploadImage(formData: FormData) {
@@ -41,6 +42,24 @@ export async function getCategories() {
   );
 }
 
+// ─── ISBN 조회 서버 액션 ───
+export async function fetchBookDataByISBN(
+  isbn: string
+): Promise<{ success: true; data: ISBNBookData } | { success: false; error: string }> {
+  if (!validateISBN(isbn)) {
+    return { success: false, error: "유효하지 않은 ISBN 형식입니다. (10자리 또는 13자리)" };
+  }
+  try {
+    const data = await fetchBookByISBN(isbn);
+    if (!data) {
+      return { success: false, error: "해당 ISBN의 도서 정보를 찾을 수 없습니다." };
+    }
+    return { success: true, data };
+  } catch {
+    return { success: false, error: "도서 정보 조회 중 오류가 발생했습니다." };
+  }
+}
+
 // ─── 도서 목록 조회 ───
 export async function getAdminBooks() {
   return adminClient.fetch(
@@ -61,6 +80,7 @@ export async function getAdminBooks() {
       publisher,
       language,
       format,
+      isbn,
       "coverImageUrl": coverImage.asset->url
     }`
   );
@@ -85,6 +105,7 @@ export async function getAdminBook(id: string) {
       publisher,
       language,
       format,
+      isbn,
       "coverImageUrl": coverImage.asset->url
     }`,
     { id }
@@ -110,6 +131,7 @@ export async function createBook(formData: FormData) {
   const language = formData.get("language") as string;
   const format = formData.get("format") as string;
   const coverImageAssetId = formData.get("coverImageAssetId") as string;
+  const isbn = formData.get("isbn") as string;
 
   const slug = titleEn ? toSlug(titleEn) : toSlug(title);
 
@@ -129,6 +151,7 @@ export async function createBook(formData: FormData) {
     publisher: publisher || undefined,
     language: language || undefined,
     format: format || undefined,
+    isbn: isbn || undefined,
   };
 
   if (coverImageAssetId) {
@@ -164,6 +187,7 @@ export async function updateBook(id: string, formData: FormData) {
   const language = formData.get("language") as string;
   const format = formData.get("format") as string;
   const coverImageAssetId = formData.get("coverImageAssetId") as string;
+  const isbn = formData.get("isbn") as string;
 
   const updates: Record<string, unknown> = {
     title,
@@ -179,6 +203,7 @@ export async function updateBook(id: string, formData: FormData) {
     publisher: publisher || undefined,
     language: language || undefined,
     format: format || undefined,
+    isbn: isbn || undefined,
   };
 
   if (coverImageAssetId) {
