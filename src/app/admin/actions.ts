@@ -183,9 +183,11 @@ export async function createBook(formData: FormData) {
     }));
   }
 
-  await adminClient.create(doc);
+  const created = await adminClient.create(doc);
+  const newSlug = (created.slug as { current: string })?.current;
   revalidatePath("/admin");
   revalidatePath("/books");
+  if (newSlug) revalidatePath(`/books/${newSlug}`);
   revalidatePath("/");
   return { success: true };
 }
@@ -251,8 +253,14 @@ export async function updateBook(id: string, formData: FormData) {
     .set(updates)
     .commit();
 
+  // 해당 book의 slug를 조회해서 개별 페이지도 갱신
+  const doc = await adminClient.fetch(
+    `*[_type == "book" && _id == $id][0] { "slug": slug.current }`,
+    { id }
+  );
   revalidatePath("/admin");
   revalidatePath("/books");
+  if (doc?.slug) revalidatePath(`/books/${doc.slug}`);
   revalidatePath("/");
   return { success: true };
 }
