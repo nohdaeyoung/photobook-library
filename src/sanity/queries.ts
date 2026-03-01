@@ -40,7 +40,7 @@ export const allBooksQuery = groq`*[_type == "book"] | order(year desc) ${bookPr
 export const featuredBooksQuery = groq`*[_type == "book" && featured == true] | order(year desc) ${bookProjection}`;
 
 // 최근 도서 (limit)
-export const recentBooksQuery = groq`*[_type == "book"] | order(year desc) [0...$limit] ${bookProjection}`;
+export const recentBooksQuery = groq`*[_type == "book"] | order(_createdAt desc) [0...$limit] ${bookProjection}`;
 
 // 슬러그로 도서 조회
 export const bookBySlugQuery = groq`*[_type == "book" && slug.current == $slug][0] ${bookProjection}`;
