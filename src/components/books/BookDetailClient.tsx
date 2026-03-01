@@ -200,7 +200,11 @@ export function BookDetailClient({
   // 라이트박스에 전달할 이미지 배열:
   // 내부 images가 있으면 그것을 사용, 없으면 커버 이미지로 대체
   const viewerImages =
-    book.images && book.images.length > 0 ? book.images : [book.coverImage];
+    book.images && book.images.length > 0
+      ? book.images
+      : book.coverImage
+        ? [book.coverImage]
+        : [];
 
   // 브레드크럼 항목
   const breadcrumbItems = [
