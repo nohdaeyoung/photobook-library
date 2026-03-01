@@ -7,6 +7,8 @@ const QUICK_LINKS = [
   { label: "홈", href: "/" },
   { label: "컬렉션", href: "/books" },
   { label: "소개", href: "/about" },
+  { label: "개발노트", href: "/dev-notes" },
+  { label: "프롬프트", href: "/prompts" },
 ] as const;
 
 const SNS_LINKS = [
@@ -155,14 +157,20 @@ export default function Footer() {
 
         {/* 하단 저작권 */}
         <div
-          className="mt-10 pt-6 flex items-center justify-center"
+          className="mt-10 pt-6 flex flex-col items-center gap-2"
           style={{ borderTop: "1px solid var(--border)" }}
         >
           <p
             className="text-xs text-center"
             style={{ color: "var(--text-muted)" }}
           >
-            &copy; 2026 Photobook Library. All rights reserved.
+            &copy; {new Date().getFullYear()} Photobook Library. All rights reserved.
+          </p>
+          <p
+            className="text-xs text-center"
+            style={{ color: "var(--text-muted)" }}
+          >
+            Built with Next.js &amp; Claude Code
           </p>
         </div>
       </div>
