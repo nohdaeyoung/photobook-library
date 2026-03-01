@@ -7,8 +7,6 @@ const QUICK_LINKS = [
   { label: "홈", href: "/" },
   { label: "컬렉션", href: "/books" },
   { label: "소개", href: "/about" },
-  { label: "개발노트", href: "/dev-notes" },
-  { label: "프롬프트", href: "/prompts" },
 ] as const;
 
 const SNS_LINKS = [
@@ -157,9 +155,30 @@ export default function Footer() {
 
         {/* 하단 저작권 */}
         <div
-          className="mt-10 pt-6 flex flex-col items-center gap-2"
+          className="mt-10 pt-6 flex flex-col items-center gap-3"
           style={{ borderTop: "1px solid var(--border)" }}
         >
+          <div className="flex items-center gap-4">
+            <Link
+              href="/dev-notes"
+              className="text-xs transition-colors duration-150"
+              style={{ color: "var(--text-muted)" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--text-muted)")}
+            >
+              개발노트
+            </Link>
+            <span className="text-xs" style={{ color: "var(--border)" }}>|</span>
+            <Link
+              href="/prompts"
+              className="text-xs transition-colors duration-150"
+              style={{ color: "var(--text-muted)" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--text-muted)")}
+            >
+              프롬프트
+            </Link>
+          </div>
           <p
             className="text-xs text-center"
             style={{ color: "var(--text-muted)" }}
