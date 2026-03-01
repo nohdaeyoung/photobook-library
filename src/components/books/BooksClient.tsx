@@ -127,15 +127,31 @@ export default function BooksClient({
     [updateURL, selectedCategory, selectedTags]
   );
 
+  // 추천 필터
+  const [featuredOnly, setFeaturedOnly] = useState(false);
+
+  const handleFeaturedChange = useCallback(
+    (featured: boolean) => {
+      setFeaturedOnly(featured);
+      setVisibleCount(INITIAL_VISIBLE);
+    },
+    []
+  );
+
   const handleReset = useCallback(() => {
     router.replace("/books", { scroll: false });
     setVisibleCount(INITIAL_VISIBLE);
+    setFeaturedOnly(false);
   }, [router]);
 
   // ─── 필터 + 정렬 로직 ────────────────────────────────────────────────────
 
   const filteredBooks = useMemo(() => {
     let result = initialBooks;
+
+    if (featuredOnly) {
+      result = result.filter((b) => b.featured);
+    }
 
     if (selectedCategory) {
       result = result.filter((b) => b.category === selectedCategory);
@@ -148,7 +164,7 @@ export default function BooksClient({
     }
 
     return sortBooks(result, sortKey);
-  }, [initialBooks, selectedCategory, selectedTags, sortKey]);
+  }, [initialBooks, selectedCategory, selectedTags, sortKey, featuredOnly]);
 
   const visibleBooks = useMemo(
     () => filteredBooks.slice(0, visibleCount),
@@ -203,8 +219,10 @@ export default function BooksClient({
               tags={tags}
               selectedCategory={selectedCategory}
               selectedTags={selectedTags}
+              featuredOnly={featuredOnly}
               onCategoryChange={handleCategoryChange}
               onTagChange={handleTagChange}
+              onFeaturedChange={handleFeaturedChange}
               onReset={handleReset}
             />
 

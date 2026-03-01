@@ -22,8 +22,10 @@ interface FilterSidebarProps {
   tags: TagItem[];
   selectedCategory: string | null;
   selectedTags: string[];
+  featuredOnly: boolean;
   onCategoryChange: (slug: string | null) => void;
   onTagChange: (tag: string) => void;
+  onFeaturedChange: (featured: boolean) => void;
   onReset: () => void;
 }
 
@@ -34,11 +36,13 @@ function SidebarContent({
   tags,
   selectedCategory,
   selectedTags,
+  featuredOnly,
   onCategoryChange,
   onTagChange,
+  onFeaturedChange,
   onReset,
 }: FilterSidebarProps) {
-  const hasActiveFilters = selectedCategory !== null || selectedTags.length > 0;
+  const hasActiveFilters = selectedCategory !== null || selectedTags.length > 0 || featuredOnly;
 
   return (
     <div className="flex flex-col h-full">
@@ -75,6 +79,44 @@ function SidebarContent({
 
       {/* Scrollable area */}
       <div className="flex-1 overflow-y-auto space-y-6 pr-1">
+        {/* ── 전체 / 추천 ── */}
+        <section>
+          <div className="flex gap-2">
+            {([
+              { key: false, label: "전체" },
+              { key: true, label: "추천" },
+            ] as const).map((item) => {
+              const isActive = item.key === featuredOnly;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => onFeaturedChange(item.key)}
+                  className={cn(
+                    "flex-1 py-2 rounded-lg text-sm font-medium",
+                    "transition-colors duration-150",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+                  )}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: "var(--accent-muted, rgba(224,192,128,0.12))",
+                          color: "var(--accent, #E0C080)",
+                          border: "1px solid var(--accent, #E0C080)",
+                        }
+                      : {
+                          backgroundColor: "transparent",
+                          color: "var(--text-secondary, rgba(245,245,240,0.7))",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                        }
+                  }
+                >
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
         {/* ── Category section ── */}
         <section>
           <h3
@@ -261,7 +303,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const hasActiveFilters =
-    props.selectedCategory !== null || props.selectedTags.length > 0;
+    props.selectedCategory !== null || props.selectedTags.length > 0 || props.featuredOnly;
 
   // Close bottom sheet on Escape
   useEffect(() => {
