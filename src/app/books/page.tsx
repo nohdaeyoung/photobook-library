@@ -8,10 +8,10 @@ export const metadata: Metadata = {
   description: "사진책 전체 목록",
 };
 
-export default function BooksPage() {
-  const books = getAllBooks();
-  const categories = getAllCategories();
-  const tags = getAllTags();
+export default async function BooksPage() {
+  const books = await getAllBooks();
+  const categories = await getAllCategories();
+  const tags = await getAllTags();
 
   return (
     <Suspense>

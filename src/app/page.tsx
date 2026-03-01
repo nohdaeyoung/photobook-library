@@ -1,10 +1,10 @@
 import { getFeaturedBooks, getRecentBooks, getAllCategories } from "@/lib/books";
 import HomeClient from "@/components/home/HomeClient";
 
-export default function HomePage() {
-  const featuredBooks = getFeaturedBooks();
-  const recentBooks = getRecentBooks(6);
-  const categories = getAllCategories();
+export default async function HomePage() {
+  const featuredBooks = await getFeaturedBooks();
+  const recentBooks = await getRecentBooks(6);
+  const categories = await getAllCategories();
 
   return (
     <HomeClient

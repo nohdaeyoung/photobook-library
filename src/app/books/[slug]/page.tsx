@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
-  getAllBooks,
+  getAllBookSlugs,
   getBookBySlug,
   getRelatedBooks,
   getBookNavigation,
@@ -11,9 +11,9 @@ import { BookDetailClient } from "@/components/books/BookDetailClient";
 
 // ─── 정적 경로 생성 ───────────────────────────────────────────────────────────
 
-export function generateStaticParams() {
-  const books = getAllBooks();
-  return books.map((book) => ({ slug: book.slug }));
+export async function generateStaticParams() {
+  const slugs = await getAllBookSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 // ─── 메타데이터 ───────────────────────────────────────────────────────────────
@@ -24,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const book = getBookBySlug(slug);
+  const book = await getBookBySlug(slug);
 
   if (!book) {
     return { title: "책을 찾을 수 없습니다" };
@@ -66,12 +66,12 @@ export default async function BookDetailPage({
 }) {
   const { slug } = await params;
 
-  const book = getBookBySlug(slug);
+  const book = await getBookBySlug(slug);
   if (!book) notFound();
 
-  const relatedBooks = getRelatedBooks(slug);
-  const navigation = getBookNavigation(slug);
-  const category = getCategoryBySlug(book.category);
+  const relatedBooks = await getRelatedBooks(slug);
+  const navigation = await getBookNavigation(slug);
+  const category = await getCategoryBySlug(book.category);
   const categoryName = category?.name ?? book.category;
 
   return (

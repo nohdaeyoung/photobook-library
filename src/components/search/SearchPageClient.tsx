@@ -8,15 +8,21 @@ import SearchModal from "@/components/search/SearchModal";
 import SearchInput from "@/components/search/SearchInput";
 import { BookCard } from "@/components/book/BookCard";
 import { searchBooks } from "@/lib/search/fuseConfig";
-import { getAllTags, getRecentBooks } from "@/lib/books";
-import { books } from "@/data/books";
 import type { PhotoBook } from "@/types";
 
-// 인기 태그 (빈도순 상위)
-const POPULAR_TAGS = getAllTags().slice(0, 12);
-const RECENT_BOOKS = getRecentBooks(8);
+interface SearchPageClientProps {
+  allBooks: PhotoBook[];
+  popularTags: { name: string; count: number }[];
+  recentBooks: PhotoBook[];
+}
 
-function EmptyState({ query }: { query: string }) {
+function EmptyState({
+  query,
+  popularTags,
+}: {
+  query: string;
+  popularTags: { name: string; count: number }[];
+}) {
   const router = useRouter();
 
   function handleTagClick(tag: string) {
@@ -26,7 +32,6 @@ function EmptyState({ query }: { query: string }) {
 
   return (
     <div className="flex flex-col items-center py-20 px-4 text-center">
-      {/* 빈 돋보기 아이콘 */}
       <div
         className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
         style={{ backgroundColor: "var(--bg-secondary)" }}
@@ -58,14 +63,10 @@ function EmptyState({ query }: { query: string }) {
       >
         검색 결과가 없습니다
       </p>
-      <p
-        className="text-sm mb-8"
-        style={{ color: "var(--text-muted)" }}
-      >
+      <p className="text-sm mb-8" style={{ color: "var(--text-muted)" }}>
         &ldquo;{query}&rdquo;에 대한 결과를 찾을 수 없습니다
       </p>
 
-      {/* 추천 태그 */}
       <div className="w-full max-w-lg text-left">
         <p
           className="text-xs font-semibold uppercase tracking-widest mb-3"
@@ -74,7 +75,7 @@ function EmptyState({ query }: { query: string }) {
           추천 태그
         </p>
         <div className="flex flex-wrap gap-2">
-          {POPULAR_TAGS.map(({ name }) => (
+          {popularTags.map(({ name }) => (
             <button
               key={name}
               type="button"
@@ -85,11 +86,11 @@ function EmptyState({ query }: { query: string }) {
                 border: "1px solid var(--border)",
                 color: "var(--text-secondary)",
               }}
-              onMouseEnter={e => {
+              onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = "var(--accent)";
                 e.currentTarget.style.color = "var(--accent)";
               }}
-              onMouseLeave={e => {
+              onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "var(--border)";
                 e.currentTarget.style.color = "var(--text-secondary)";
               }}
@@ -103,7 +104,13 @@ function EmptyState({ query }: { query: string }) {
   );
 }
 
-function InitialState() {
+function InitialState({
+  popularTags,
+  recentBooks,
+}: {
+  popularTags: { name: string; count: number }[];
+  recentBooks: PhotoBook[];
+}) {
   const router = useRouter();
 
   function handleTagClick(tag: string) {
@@ -113,7 +120,6 @@ function InitialState() {
 
   return (
     <div className="flex flex-col gap-16">
-      {/* 인기 태그 클라우드 */}
       <div>
         <h2
           className="text-xs font-semibold uppercase tracking-widest mb-4"
@@ -122,7 +128,7 @@ function InitialState() {
           인기 태그
         </h2>
         <div className="flex flex-wrap gap-2">
-          {POPULAR_TAGS.map(({ name, count }) => (
+          {popularTags.map(({ name, count }) => (
             <button
               key={name}
               type="button"
@@ -133,15 +139,17 @@ function InitialState() {
                 border: "1px solid var(--border)",
                 color: "var(--text-secondary)",
               }}
-              onMouseEnter={e => {
+              onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = "var(--accent)";
                 e.currentTarget.style.color = "var(--accent)";
-                e.currentTarget.style.backgroundColor = "var(--accent-muted)";
+                e.currentTarget.style.backgroundColor =
+                  "var(--accent-muted)";
               }}
-              onMouseLeave={e => {
+              onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "var(--border)";
                 e.currentTarget.style.color = "var(--text-secondary)";
-                e.currentTarget.style.backgroundColor = "var(--bg-secondary)";
+                e.currentTarget.style.backgroundColor =
+                  "var(--bg-secondary)";
               }}
             >
               <span>{name}</span>
@@ -156,7 +164,6 @@ function InitialState() {
         </div>
       </div>
 
-      {/* 최근 추가 사진책 */}
       <div>
         <h2
           className="text-xs font-semibold uppercase tracking-widest mb-4"
@@ -165,7 +172,7 @@ function InitialState() {
           최근 추가된 사진책
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
-          {RECENT_BOOKS.map((book, i) => (
+          {recentBooks.map((book, i) => (
             <BookCard key={book.id} book={book} size="md" priority={i < 4} />
           ))}
         </div>
@@ -174,7 +181,11 @@ function InitialState() {
   );
 }
 
-export default function SearchPageClient() {
+export default function SearchPageClient({
+  allBooks,
+  popularTags,
+  recentBooks,
+}: SearchPageClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -185,10 +196,9 @@ export default function SearchPageClient() {
   const [searchOpen, setSearchOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 초기 쿼리가 있을 때 즉시 검색 실행
   useEffect(() => {
     if (initialQuery.trim()) {
-      const found = searchBooks(books, initialQuery.trim());
+      const found = searchBooks(allBooks, initialQuery.trim());
       setResults(found);
       setHasSearched(true);
     }
@@ -209,14 +219,14 @@ export default function SearchPageClient() {
       }
 
       debounceRef.current = setTimeout(() => {
-        const found = searchBooks(books, value.trim());
+        const found = searchBooks(allBooks, value.trim());
         setResults(found);
         setHasSearched(true);
         const params = new URLSearchParams({ q: value.trim() });
         router.replace(`/search?${params.toString()}`);
       }, 300);
     },
-    [router]
+    [router, allBooks]
   );
 
   const showResults = hasSearched && results.length > 0;
@@ -233,8 +243,6 @@ export default function SearchPageClient() {
         style={{ backgroundColor: "var(--bg-primary)" }}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-20">
-
-          {/* 페이지 제목 */}
           <div className="mb-8">
             <h1
               className="text-3xl sm:text-4xl font-bold mb-2"
@@ -245,15 +253,11 @@ export default function SearchPageClient() {
             >
               검색
             </h1>
-            <p
-              className="text-sm"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
               사진책 제목, 작가, 태그로 검색하세요
             </p>
           </div>
 
-          {/* 검색 입력 — 크고 눈에 띄게 */}
           <div className="mb-10 max-w-2xl">
             <SearchInput
               value={query}
@@ -263,7 +267,6 @@ export default function SearchPageClient() {
             />
           </div>
 
-          {/* 결과 카운트 */}
           {showResults && (
             <p
               className="text-sm mb-6 tabular-nums"
@@ -275,28 +278,40 @@ export default function SearchPageClient() {
               건의 검색 결과
               {query && (
                 <>
-                  {" "}— &ldquo;
-                  <span style={{ color: "var(--text-secondary)" }}>{query}</span>
+                  {" "}
+                  — &ldquo;
+                  <span style={{ color: "var(--text-secondary)" }}>
+                    {query}
+                  </span>
                   &rdquo;
                 </>
               )}
             </p>
           )}
 
-          {/* 결과 그리드 */}
           {showResults && (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               {results.map((book, i) => (
-                <BookCard key={book.id} book={book} size="md" priority={i < 4} />
+                <BookCard
+                  key={book.id}
+                  book={book}
+                  size="md"
+                  priority={i < 4}
+                />
               ))}
             </div>
           )}
 
-          {/* 빈 결과 상태 */}
-          {showEmpty && <EmptyState query={query} />}
+          {showEmpty && (
+            <EmptyState query={query} popularTags={popularTags} />
+          )}
 
-          {/* 초기 상태: 인기 태그 + 최근 사진책 */}
-          {showInitial && <InitialState />}
+          {showInitial && (
+            <InitialState
+              popularTags={popularTags}
+              recentBooks={recentBooks}
+            />
+          )}
         </div>
       </main>
 

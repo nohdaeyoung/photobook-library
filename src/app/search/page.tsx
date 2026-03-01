@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { getAllBooks, getAllTags, getRecentBooks } from "@/lib/books";
 import SearchPageClient from "@/components/search/SearchPageClient";
 
 export const metadata: Metadata = {
@@ -13,10 +14,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SearchPage() {
+export default async function SearchPage() {
+  const allBooks = await getAllBooks();
+  const popularTags = (await getAllTags()).slice(0, 12);
+  const recentBooks = await getRecentBooks(8);
+
   return (
     <Suspense>
-      <SearchPageClient />
+      <SearchPageClient
+        allBooks={allBooks}
+        popularTags={popularTags}
+        recentBooks={recentBooks}
+      />
     </Suspense>
   );
 }

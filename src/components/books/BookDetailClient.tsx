@@ -15,12 +15,17 @@ import SearchModal from "@/components/search/SearchModal";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
+interface NavItem {
+  slug: string;
+  title: string;
+}
+
 interface BookDetailClientProps {
   book: PhotoBook;
   relatedBooks: PhotoBook[];
   navigation: {
-    prev: PhotoBook | null;
-    next: PhotoBook | null;
+    prev: NavItem | null;
+    next: NavItem | null;
   };
   categoryName: string;
 }
@@ -88,7 +93,7 @@ function NavLink({
   book,
   direction,
 }: {
-  book: PhotoBook;
+  book: NavItem;
   direction: "prev" | "next";
 }) {
   const isPrev = direction === "prev";
@@ -143,12 +148,12 @@ function NavLink({
       >
         {book.title}
       </span>
-      {book.author && (
+      {"author" in book && (book as { author?: string }).author && (
         <span
           className="text-xs"
           style={{ color: "var(--text-muted)" }}
         >
-          {book.author}
+          {(book as { author: string }).author}
         </span>
       )}
     </Link>
