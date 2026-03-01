@@ -37,7 +37,7 @@ const bookProjection = `{
 export const allBooksQuery = groq`*[_type == "book"] | order(year desc) ${bookProjection}`;
 
 // 추천 도서
-export const featuredBooksQuery = groq`*[_type == "book" && featured == true] | order(year desc) ${bookProjection}`;
+export const featuredBooksQuery = groq`*[_type == "book" && featured == true] | order(year desc) [0...4] ${bookProjection}`;
 
 // 최근 도서 (limit)
 export const recentBooksQuery = groq`*[_type == "book"] | order(_createdAt desc) [0...$limit] ${bookProjection}`;

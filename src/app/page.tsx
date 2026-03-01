@@ -3,7 +3,7 @@ import HomeClient from "@/components/home/HomeClient";
 
 export default async function HomePage() {
   const featuredBooks = await getFeaturedBooks();
-  const recentBooks = await getRecentBooks(6);
+  const recentBooks = await getRecentBooks(4);
   const categories = await getAllCategories();
 
   return (
