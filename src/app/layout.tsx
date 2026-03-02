@@ -23,6 +23,7 @@ const pretendard = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://l.324.ing"),
   title: {
     default: "Photobook & ArtBook Library — 사진책 라이브러리",
     template: "%s — Photobook & ArtBook Library",

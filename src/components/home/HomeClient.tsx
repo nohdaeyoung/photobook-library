@@ -45,8 +45,7 @@ export default function HomeClient({
             className="absolute inset-0 pointer-events-none"
             aria-hidden="true"
             style={{
-              background:
-                "linear-gradient(to bottom, rgba(13,13,13,0.85) 0%, rgba(13,13,13,0.4) 60%, rgba(13,13,13,0) 100%)",
+              background: "var(--bg-hero-gradient)",
             }}
           />
 
@@ -108,7 +107,7 @@ export default function HomeClient({
               className="inline-flex items-center gap-3 px-8 py-3.5 rounded-full text-sm font-medium tracking-widest uppercase transition-all duration-[var(--transition-normal)]"
               style={{
                 backgroundColor: "var(--accent)",
-                color: "#0D0D0D",
+                color: "var(--text-on-accent)",
                 letterSpacing: "0.15em",
               }}
               onMouseEnter={(e) => {

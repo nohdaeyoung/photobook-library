@@ -49,11 +49,11 @@ function SidebarContent({
       {/* Header */}
       <div
         className="flex items-center justify-between pb-4 mb-4"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+        style={{ borderBottom: "1px solid var(--border-subtle)" }}
       >
         <h2
           className="text-sm font-semibold uppercase tracking-widest"
-          style={{ color: "var(--text-muted, rgba(245,245,240,0.5))" }}
+          style={{ color: "var(--text-muted)" }}
         >
           필터
         </h2>
@@ -67,8 +67,8 @@ function SidebarContent({
               "focus-visible:outline-none focus-visible:ring-2",
             )}
             style={{
-              color: "var(--accent, #E0C080)",
-              border: "1px solid var(--accent, #E0C080)",
+              color: "var(--accent)",
+              border: "1px solid var(--accent)",
               backgroundColor: "transparent",
             }}
           >
@@ -94,19 +94,19 @@ function SidebarContent({
                   className={cn(
                     "flex-1 py-2 rounded-lg text-sm font-medium",
                     "transition-colors duration-150",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring",
                   )}
                   style={
                     isActive
                       ? {
-                          backgroundColor: "var(--accent-muted, rgba(224,192,128,0.12))",
-                          color: "var(--accent, #E0C080)",
-                          border: "1px solid var(--accent, #E0C080)",
+                          backgroundColor: "var(--accent-muted)",
+                          color: "var(--accent)",
+                          border: "1px solid var(--accent)",
                         }
                       : {
                           backgroundColor: "transparent",
-                          color: "var(--text-secondary, rgba(245,245,240,0.7))",
-                          border: "1px solid rgba(255,255,255,0.1)",
+                          color: "var(--text-secondary)",
+                          border: "1px solid var(--border-light)",
                         }
                   }
                 >
@@ -121,7 +121,7 @@ function SidebarContent({
         <section>
           <h3
             className="text-xs font-medium uppercase tracking-widest mb-3"
-            style={{ color: "var(--text-muted, rgba(245,245,240,0.4))" }}
+            style={{ color: "var(--text-muted)" }}
           >
             카테고리
           </h3>
@@ -140,16 +140,16 @@ function SidebarContent({
                       "w-full flex items-center justify-between gap-2",
                       "px-3 py-2 rounded-lg text-sm text-left",
                       "transition-colors duration-150",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring",
                     )}
                     style={
                       isSelected
                         ? {
-                            backgroundColor: "var(--accent-muted, rgba(224,192,128,0.12))",
-                            color: "var(--accent, #E0C080)",
+                            backgroundColor: "var(--accent-muted)",
+                            color: "var(--accent)",
                           }
                         : {
-                            color: "var(--text-secondary, rgba(245,245,240,0.7))",
+                            color: "var(--text-secondary)",
                             backgroundColor: "transparent",
                           }
                     }
@@ -160,14 +160,14 @@ function SidebarContent({
                         className="flex-shrink-0 w-3.5 h-3.5 rounded-full border flex items-center justify-center"
                         style={{
                           borderColor: isSelected
-                            ? "var(--accent, #E0C080)"
-                            : "rgba(255,255,255,0.2)",
+                            ? "var(--accent)"
+                            : "var(--border-medium)",
                         }}
                       >
                         {isSelected && (
                           <span
                             className="w-1.5 h-1.5 rounded-full"
-                            style={{ backgroundColor: "var(--accent, #E0C080)" }}
+                            style={{ backgroundColor: "var(--accent)" }}
                           />
                         )}
                       </span>
@@ -177,7 +177,7 @@ function SidebarContent({
                     {/* Count badge */}
                     <span
                       className="flex-shrink-0 text-xs tabular-nums"
-                      style={{ color: "var(--text-muted, rgba(245,245,240,0.35))" }}
+                      style={{ color: "var(--text-muted)" }}
                     >
                       ({cat.count})
                     </span>
@@ -193,7 +193,7 @@ function SidebarContent({
           <section>
             <h3
               className="text-xs font-medium uppercase tracking-widest mb-3"
-              style={{ color: "var(--text-muted, rgba(245,245,240,0.4))" }}
+              style={{ color: "var(--text-muted)" }}
             >
               태그
             </h3>
@@ -210,16 +210,16 @@ function SidebarContent({
                         "w-full flex items-center justify-between gap-2",
                         "px-3 py-2 rounded-lg text-sm text-left",
                         "transition-colors duration-150",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring",
                       )}
                       style={
                         isChecked
                           ? {
-                              backgroundColor: "var(--accent-muted, rgba(224,192,128,0.12))",
-                              color: "var(--accent, #E0C080)",
+                              backgroundColor: "var(--accent-muted)",
+                              color: "var(--accent)",
                             }
                           : {
-                              color: "var(--text-secondary, rgba(245,245,240,0.7))",
+                              color: "var(--text-secondary)",
                               backgroundColor: "transparent",
                             }
                       }
@@ -231,9 +231,9 @@ function SidebarContent({
                           style={{
                             border: isChecked
                               ? "none"
-                              : "1.5px solid rgba(255,255,255,0.2)",
+                              : "1.5px solid var(--border-medium)",
                             backgroundColor: isChecked
-                              ? "var(--accent, #E0C080)"
+                              ? "var(--accent)"
                               : "transparent",
                           }}
                         >
@@ -244,11 +244,12 @@ function SidebarContent({
                               height="9"
                               viewBox="0 0 12 12"
                               fill="none"
-                              stroke="#0D0D0D"
+                              stroke="currentColor"
                               strokeWidth="2.5"
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               aria-hidden="true"
+                              style={{ color: "var(--text-on-accent)" }}
                             >
                               <polyline points="2 6 5 9 10 3" />
                             </svg>
@@ -260,7 +261,7 @@ function SidebarContent({
                       {/* Count badge */}
                       <span
                         className="flex-shrink-0 text-xs tabular-nums"
-                        style={{ color: "var(--text-muted, rgba(245,245,240,0.35))" }}
+                        style={{ color: "var(--text-muted)" }}
                       >
                         ({tag.count})
                       </span>
@@ -274,20 +275,20 @@ function SidebarContent({
       </div>
 
       {/* Reset button (bottom, always visible) */}
-      <div className="pt-4 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+      <div className="pt-4 mt-2" style={{ borderTop: "1px solid var(--border-subtle)" }}>
         <button
           onClick={onReset}
           disabled={!hasActiveFilters}
           className={cn(
             "w-full py-2.5 rounded-lg text-sm font-medium",
             "transition-colors duration-150",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring",
             "disabled:opacity-30 disabled:cursor-not-allowed",
           )}
           style={{
-            backgroundColor: "var(--bg-secondary, #1A1A17)",
-            color: "var(--text-secondary, rgba(245,245,240,0.7))",
-            border: "1px solid rgba(255,255,255,0.08)",
+            backgroundColor: "var(--bg-secondary)",
+            color: "var(--text-secondary)",
+            border: "1px solid var(--border-subtle)",
           }}
         >
           필터 초기화
@@ -336,19 +337,19 @@ export default function FilterSidebar(props: FilterSidebarProps) {
           className={cn(
             "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium",
             "transition-colors duration-150",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring",
           )}
           style={{
             backgroundColor: hasActiveFilters
-              ? "var(--accent-muted, rgba(224,192,128,0.12))"
-              : "var(--bg-secondary, #1A1A17)",
+              ? "var(--accent-muted)"
+              : "var(--bg-secondary)",
             color: hasActiveFilters
-              ? "var(--accent, #E0C080)"
-              : "var(--text-secondary, rgba(245,245,240,0.7))",
+              ? "var(--accent)"
+              : "var(--text-secondary)",
             border: `1px solid ${
               hasActiveFilters
-                ? "var(--accent, #E0C080)"
-                : "rgba(255,255,255,0.1)"
+                ? "var(--accent)"
+                : "var(--border-light)"
             }`,
           }}
         >
@@ -374,8 +375,8 @@ export default function FilterSidebar(props: FilterSidebarProps) {
             <span
               className="w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center"
               style={{
-                backgroundColor: "var(--accent, #E0C080)",
-                color: "#0D0D0D",
+                backgroundColor: "var(--accent)",
+                color: "var(--text-on-accent)",
               }}
             >
               {(props.selectedCategory ? 1 : 0) + props.selectedTags.length}
@@ -418,24 +419,24 @@ export default function FilterSidebar(props: FilterSidebarProps) {
                 "flex flex-col",
                 "max-h-[80vh]",
               )}
-              style={{ backgroundColor: "var(--bg-primary, #0D0D0D)" }}
+              style={{ backgroundColor: "var(--bg-primary)" }}
             >
               {/* Drag handle */}
               <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
                 <div
                   className="w-10 h-1 rounded-full"
-                  style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
+                  style={{ backgroundColor: "var(--drag-handle)" }}
                 />
               </div>
 
               {/* Sheet header */}
               <div
                 className="flex items-center justify-between px-5 py-3 flex-shrink-0"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                style={{ borderBottom: "1px solid var(--border-subtle)" }}
               >
                 <span
                   className="text-sm font-semibold"
-                  style={{ color: "var(--text-primary, #F5F5F0)" }}
+                  style={{ color: "var(--text-primary)" }}
                 >
                   필터 선택
                 </span>
@@ -445,7 +446,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
                   className={cn(
                     "flex items-center justify-center w-8 h-8 rounded-full",
                     "transition-colors duration-150",
-                    "hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+                    "hover:bg-hover-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring",
                   )}
                 >
                   <svg
@@ -458,7 +459,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    style={{ color: "var(--text-muted, rgba(245,245,240,0.5))" }}
+                    style={{ color: "var(--text-muted)" }}
                     aria-hidden="true"
                   >
                     <line x1="18" y1="6" x2="6" y2="18" />
@@ -475,7 +476,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
               {/* Apply button (mobile convenience) */}
               <div
                 className="px-5 py-4 flex-shrink-0"
-                style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+                style={{ borderTop: "1px solid var(--border-subtle)" }}
               >
                 <button
                   onClick={() => setMobileOpen(false)}
@@ -485,8 +486,8 @@ export default function FilterSidebar(props: FilterSidebarProps) {
                     "focus-visible:outline-none focus-visible:ring-2",
                   )}
                   style={{
-                    backgroundColor: "var(--accent, #E0C080)",
-                    color: "#0D0D0D",
+                    backgroundColor: "var(--accent)",
+                    color: "var(--text-on-accent)",
                   }}
                 >
                   적용하기

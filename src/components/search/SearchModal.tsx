@@ -111,12 +111,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               "flex flex-col",
               "max-h-[90vh] overflow-hidden",
             )}
-            style={{ backgroundColor: "var(--bg-primary, #0D0D0D)" }}
+            style={{ backgroundColor: "var(--bg-primary)" }}
           >
             {/* Search input row */}
             <div
               className="flex items-center gap-3 p-4"
-              style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+              style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
               <div className="flex-1">
                 <SearchInput
@@ -134,7 +134,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 className={cn(
                   "flex items-center justify-center w-9 h-9 rounded-full flex-shrink-0",
                   "transition-colors duration-150",
-                  "hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+                  "hover:bg-hover-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring",
                 )}
               >
                 <svg
@@ -147,7 +147,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  style={{ color: "var(--text-muted, rgba(245,245,240,0.5))" }}
+                  style={{ color: "var(--text-muted)" }}
                   aria-hidden="true"
                 >
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -163,7 +163,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <div className="p-4">
                   <p
                     className="text-xs mb-3 tabular-nums"
-                    style={{ color: "var(--text-muted, rgba(245,245,240,0.4))" }}
+                    style={{ color: "var(--text-muted)" }}
                   >
                     검색 결과 {results.length}건
                   </p>
@@ -182,7 +182,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <div className="flex flex-col items-center py-12 px-6 text-center">
                   <div
                     className="w-12 h-12 rounded-full flex items-center justify-center mb-4"
-                    style={{ backgroundColor: "var(--bg-secondary, #1A1A17)" }}
+                    style={{ backgroundColor: "var(--bg-secondary)" }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -194,7 +194,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      style={{ color: "var(--text-muted, rgba(245,245,240,0.4))" }}
+                      style={{ color: "var(--text-muted)" }}
                       aria-hidden="true"
                     >
                       <circle cx="11" cy="11" r="8" />
@@ -204,13 +204,13 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                   <p
                     className="text-base font-medium mb-1"
-                    style={{ color: "var(--text-secondary, rgba(245,245,240,0.7))" }}
+                    style={{ color: "var(--text-secondary)" }}
                   >
                     검색 결과가 없습니다
                   </p>
                   <p
                     className="text-sm mb-6"
-                    style={{ color: "var(--text-muted, rgba(245,245,240,0.4))" }}
+                    style={{ color: "var(--text-muted)" }}
                   >
                     &ldquo;{query}&rdquo;에 대한 결과를 찾을 수 없습니다
                   </p>
@@ -219,7 +219,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <div className="w-full text-left">
                     <p
                       className="text-xs font-medium uppercase tracking-widest mb-3"
-                      style={{ color: "var(--text-muted, rgba(245,245,240,0.4))" }}
+                      style={{ color: "var(--text-muted)" }}
                     >
                       인기 태그
                     </p>
@@ -234,9 +234,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             "focus-visible:outline-none focus-visible:ring-2",
                           )}
                           style={{
-                            backgroundColor: "var(--bg-secondary, #1A1A17)",
-                            border: "1px solid rgba(255,255,255,0.1)",
-                            color: "var(--text-secondary, rgba(245,245,240,0.7))",
+                            backgroundColor: "var(--bg-secondary)",
+                            border: "1px solid var(--border-light)",
+                            color: "var(--text-secondary)",
                           }}
                         >
                           {tag}
@@ -252,7 +252,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <div className="px-4 py-6">
                   <p
                     className="text-xs font-medium uppercase tracking-widest mb-3"
-                    style={{ color: "var(--text-muted, rgba(245,245,240,0.4))" }}
+                    style={{ color: "var(--text-muted)" }}
                   >
                     인기 태그
                   </p>
@@ -267,9 +267,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           "focus-visible:outline-none focus-visible:ring-2",
                         )}
                         style={{
-                          backgroundColor: "var(--bg-secondary, #1A1A17)",
-                          border: "1px solid rgba(255,255,255,0.1)",
-                          color: "var(--text-secondary, rgba(245,245,240,0.7))",
+                          backgroundColor: "var(--bg-secondary)",
+                          border: "1px solid var(--border-light)",
+                          color: "var(--text-secondary)",
                         }}
                       >
                         {tag}

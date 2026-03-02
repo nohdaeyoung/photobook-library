@@ -7,6 +7,7 @@ import {
   getBookNavigation,
   getCategoryBySlug,
 } from "@/lib/books";
+import { generateBookJsonLd, generateBreadcrumbJsonLd } from "@/lib/jsonld";
 import { BookDetailClient } from "@/components/books/BookDetailClient";
 
 // ─── 정적 경로 생성 ───────────────────────────────────────────────────────────
@@ -54,6 +55,9 @@ export async function generateMetadata({
       description: book.description,
       images: book.coverImage ? [book.coverImage.src] : [],
     },
+    alternates: {
+      canonical: `/books/${slug}`,
+    },
   };
 }
 
@@ -74,12 +78,29 @@ export default async function BookDetailPage({
   const category = await getCategoryBySlug(book.category);
   const categoryName = category?.name ?? book.category;
 
+  const bookJsonLd = generateBookJsonLd(book, categoryName);
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "홈", url: "https://l.324.ing" },
+    { name: "컬렉션", url: "https://l.324.ing/books" },
+    { name: book.title, url: `https://l.324.ing/books/${book.slug}` },
+  ]);
+
   return (
-    <BookDetailClient
-      book={book}
-      relatedBooks={relatedBooks}
-      navigation={navigation}
-      categoryName={categoryName}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(bookJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <BookDetailClient
+        book={book}
+        relatedBooks={relatedBooks}
+        navigation={navigation}
+        categoryName={categoryName}
+      />
+    </>
   );
 }

@@ -153,7 +153,7 @@ export function BookCard({ book, priority = false, size = "md" }: BookCardProps)
             className={cn(
               "absolute top-2 left-2",
               "px-2 py-0.5 rounded-[var(--radius-sm)]",
-              "bg-[var(--accent)] text-[#0D0D0D]",
+              "bg-[var(--accent)] text-[var(--text-on-accent)]",
               "text-xs font-medium leading-none",
             )}
           >

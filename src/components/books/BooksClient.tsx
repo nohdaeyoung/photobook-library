@@ -497,7 +497,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
         className="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150"
         style={{
           backgroundColor: "var(--accent)",
-          color: "#0D0D0D",
+          color: "var(--text-on-accent)",
         }}
         onMouseEnter={(e) =>
           (e.currentTarget.style.backgroundColor = "var(--accent-hover)")

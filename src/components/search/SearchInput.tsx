@@ -33,11 +33,11 @@ export default function SearchInput({
         "transition-all duration-200",
       )}
       style={{
-        backgroundColor: "var(--bg-secondary, #1A1A17)",
+        backgroundColor: "var(--bg-secondary)",
         border: `1.5px solid ${
           focused
-            ? "var(--accent, #E0C080)"
-            : "rgba(255,255,255,0.08)"
+            ? "var(--accent)"
+            : "var(--border-subtle)"
         }`,
       }}
     >
@@ -55,8 +55,8 @@ export default function SearchInput({
         className="flex-shrink-0 transition-colors duration-200"
         style={{
           color: focused
-            ? "var(--accent, #E0C080)"
-            : "var(--text-muted, rgba(245,245,240,0.4))",
+            ? "var(--accent)"
+            : "var(--text-muted)",
         }}
         aria-hidden="true"
       >
@@ -79,11 +79,11 @@ export default function SearchInput({
           "flex-1 bg-transparent outline-none text-base leading-tight",
           "[&::-webkit-search-cancel-button]:hidden",
           "[&::-webkit-search-decoration]:hidden",
-          "placeholder:text-[rgba(245,245,240,0.3)]",
+          "placeholder:text-text-muted",
         )}
         style={{
-          color: "var(--text-primary, #F5F5F0)",
-          caretColor: "var(--accent, #E0C080)",
+          color: "var(--text-primary)",
+          caretColor: "var(--accent)",
         }}
       />
 
@@ -99,7 +99,7 @@ export default function SearchInput({
           className={cn(
             "flex items-center justify-center w-5 h-5 rounded-full flex-shrink-0",
             "transition-colors duration-150",
-            "hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30",
+            "hover:bg-hover-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring",
           )}
         >
           <svg
@@ -112,7 +112,7 @@ export default function SearchInput({
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ color: "var(--text-muted, rgba(245,245,240,0.5))" }}
+            style={{ color: "var(--text-muted)" }}
             aria-hidden="true"
           >
             <line x1="18" y1="6" x2="6" y2="18" />
