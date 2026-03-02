@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getFeaturedBooks, getRecentBooks, getAllCategories } from "@/lib/books";
+import { getFeaturedBooks, getRecentBooks, getAllCategories, getAllBooks } from "@/lib/books";
 import { generateWebSiteJsonLd } from "@/lib/jsonld";
 import HomeClient from "@/components/home/HomeClient";
 
@@ -10,9 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const featuredBooks = await getFeaturedBooks();
-  const recentBooks = await getRecentBooks(4);
-  const categories = await getAllCategories();
+  const [featuredBooks, recentBooks, categories, allBooks] = await Promise.all([
+    getFeaturedBooks(),
+    getRecentBooks(4),
+    getAllCategories(),
+    getAllBooks(),
+  ]);
 
   const jsonLd = generateWebSiteJsonLd();
 
@@ -26,6 +29,7 @@ export default async function HomePage() {
         featuredBooks={featuredBooks}
         recentBooks={recentBooks}
         categories={categories}
+        allBooks={allBooks}
       />
     </>
   );

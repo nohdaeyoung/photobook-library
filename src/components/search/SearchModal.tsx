@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { searchBooks } from "@/lib/search/fuseConfig";
-import { books } from "@/data/books";
 import { BookCard } from "@/components/book/BookCard";
 import SearchInput from "@/components/search/SearchInput";
 import type { PhotoBook } from "@/types";
@@ -12,12 +11,13 @@ import type { PhotoBook } from "@/types";
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
+  books: PhotoBook[];
 }
 
 // Popular tags surfaced when query is empty and no results
 const POPULAR_TAGS = ["흑백", "다큐멘터리", "초상", "풍경", "스트리트", "한국", "클래식", "컬러"];
 
-export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export default function SearchModal({ isOpen, onClose, books }: SearchModalProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PhotoBook[]>([]);
   const [hasSearched, setHasSearched] = useState(false);

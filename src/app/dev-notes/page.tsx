@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getAllBooks } from "@/lib/books";
 import DevNotesClient from "./DevNotesClient";
 
 export const metadata: Metadata = {
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   description: "Photobook & ArtBook Library 개발 과정을 일자별로 정리한 노트입니다.",
 };
 
-export default function DevNotesPage() {
-  return <DevNotesClient />;
+export default async function DevNotesPage() {
+  const allBooks = await getAllBooks();
+  return <DevNotesClient allBooks={allBooks} />;
 }

@@ -12,12 +12,14 @@ interface HomeClientProps {
   featuredBooks: PhotoBook[];
   recentBooks: PhotoBook[];
   categories: Category[];
+  allBooks: PhotoBook[];
 }
 
 export default function HomeClient({
   featuredBooks,
   recentBooks,
   categories,
+  allBooks,
 }: HomeClientProps) {
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -30,7 +32,7 @@ export default function HomeClient({
       <Header onSearchClick={() => setSearchOpen(true)} />
 
       {/* 검색 모달 */}
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} books={allBooks} />
 
       <main className="flex-1">
         {/* ────────────────────────────────────────

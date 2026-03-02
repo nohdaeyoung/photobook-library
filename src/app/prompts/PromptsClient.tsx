@@ -5,6 +5,11 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SearchModal from "@/components/search/SearchModal";
 import Breadcrumb from "@/components/layout/Breadcrumb";
+import type { PhotoBook } from "@/types";
+
+interface PromptsClientProps {
+  allBooks: PhotoBook[];
+}
 
 const BREADCRUMB_ITEMS = [
   { label: "홈", href: "/" },
@@ -70,14 +75,14 @@ const PROMPTS: Prompt[] = [
   },
 ];
 
-export default function PromptsClient() {
+export default function PromptsClient({ allBooks }: PromptsClientProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
     <>
       <Header onSearchClick={() => setSearchOpen(true)} />
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} books={allBooks} />
 
       <main
         style={{

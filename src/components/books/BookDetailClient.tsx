@@ -29,6 +29,7 @@ interface BookDetailClientProps {
     next: NavItem | null;
   };
   categoryName: string;
+  allBooks: PhotoBook[];
 }
 
 // ─── 갤러리 이미지 카드 ────────────────────────────────────────────────────────
@@ -168,6 +169,7 @@ export function BookDetailClient({
   relatedBooks,
   navigation,
   categoryName,
+  allBooks,
 }: BookDetailClientProps) {
   // ── 검색 모달 상태 ──────────────────────────────────────
   const [searchOpen, setSearchOpen] = useState(false);
@@ -220,7 +222,7 @@ export function BookDetailClient({
     <>
       {/* ── 헤더 & 검색 모달 ─────────────────────────── */}
       <Header onSearchClick={openSearch} />
-      <SearchModal isOpen={searchOpen} onClose={closeSearch} />
+      <SearchModal isOpen={searchOpen} onClose={closeSearch} books={allBooks} />
 
       {/* ── 라이트박스 ──────────────────────────────── */}
       <LightboxViewer

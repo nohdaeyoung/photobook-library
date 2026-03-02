@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   getAllBookSlugs,
+  getAllBooks,
   getBookBySlug,
   getRelatedBooks,
   getBookNavigation,
@@ -73,9 +74,12 @@ export default async function BookDetailPage({
   const book = await getBookBySlug(slug);
   if (!book) notFound();
 
-  const relatedBooks = await getRelatedBooks(slug);
-  const navigation = await getBookNavigation(slug);
-  const category = await getCategoryBySlug(book.category);
+  const [relatedBooks, navigation, category, allBooks] = await Promise.all([
+    getRelatedBooks(slug),
+    getBookNavigation(slug),
+    getCategoryBySlug(book.category),
+    getAllBooks(),
+  ]);
   const categoryName = category?.name ?? book.category;
 
   const bookJsonLd = generateBookJsonLd(book, categoryName);
@@ -100,6 +104,7 @@ export default async function BookDetailPage({
         relatedBooks={relatedBooks}
         navigation={navigation}
         categoryName={categoryName}
+        allBooks={allBooks}
       />
     </>
   );

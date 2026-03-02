@@ -18,10 +18,12 @@ export const fuseOptions: IFuseOptions<PhotoBook> = {
 };
 
 let fuseInstance: Fuse<PhotoBook> | null = null;
+let cachedBooks: PhotoBook[] | null = null;
 
 export function getSearchIndex(books: PhotoBook[]): Fuse<PhotoBook> {
-  if (!fuseInstance) {
+  if (!fuseInstance || cachedBooks !== books) {
     fuseInstance = new Fuse(books, fuseOptions);
+    cachedBooks = books;
   }
   return fuseInstance;
 }

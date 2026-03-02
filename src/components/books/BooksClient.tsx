@@ -174,7 +174,7 @@ export default function BooksClient({
   return (
     <>
       <Header onSearchClick={() => setSearchOpen(true)} />
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} books={initialBooks} />
 
       <main
         className="min-h-screen"

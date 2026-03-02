@@ -5,27 +5,30 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SearchModal from "@/components/search/SearchModal";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import { books } from "@/data/books";
 import { categories } from "@/data/categories";
+import type { PhotoBook } from "@/types";
+
+interface AboutClientProps {
+  allBooks: PhotoBook[];
+}
 
 const BREADCRUMB_ITEMS = [
   { label: "홈", href: "/" },
   { label: "소개", href: "/about", current: true },
 ];
 
-// 카테고리별 도트 색상 매핑 (categories.ts의 color 값 활용)
 const COLLECTION_START_YEAR = 2018;
 
-export default function AboutClient() {
+export default function AboutClient({ allBooks }: AboutClientProps) {
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const totalBooks = books.length;
+  const totalBooks = allBooks.length;
   const totalCategories = categories.length;
 
   return (
     <>
       <Header onSearchClick={() => setSearchOpen(true)} />
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} books={allBooks} />
 
       <main
         style={{

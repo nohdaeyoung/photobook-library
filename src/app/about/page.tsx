@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getAllBooks } from "@/lib/books";
 import AboutClient from "@/components/about/AboutClient";
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
-  return <AboutClient />;
+export default async function AboutPage() {
+  const allBooks = await getAllBooks();
+  return <AboutClient allBooks={allBooks} />;
 }

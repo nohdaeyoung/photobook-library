@@ -236,7 +236,7 @@ export default function SearchPageClient({
   return (
     <>
       <Header onSearchClick={() => setSearchOpen(true)} />
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} books={allBooks} />
 
       <main
         className="min-h-screen"

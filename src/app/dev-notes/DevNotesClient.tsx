@@ -5,6 +5,11 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SearchModal from "@/components/search/SearchModal";
 import Breadcrumb from "@/components/layout/Breadcrumb";
+import type { PhotoBook } from "@/types";
+
+interface DevNotesClientProps {
+  allBooks: PhotoBook[];
+}
 
 const BREADCRUMB_ITEMS = [
   { label: "홈", href: "/" },
@@ -105,13 +110,13 @@ const TYPE_STYLES: Record<string, { label: string; bg: string; color: string }> 
   chore: { label: "기타", bg: "rgba(160,174,192,0.15)", color: "#A0AEC0" },
 };
 
-export default function DevNotesClient() {
+export default function DevNotesClient({ allBooks }: DevNotesClientProps) {
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <>
       <Header onSearchClick={() => setSearchOpen(true)} />
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} books={allBooks} />
 
       <main
         style={{
