@@ -291,6 +291,7 @@ export async function createBook(formData: FormData) {
   revalidatePath("/books");
   if (newSlug) revalidatePath(`/books/${newSlug}`);
   revalidatePath("/");
+  revalidatePath("/sitemap.xml");
   return { success: true };
 }
 
@@ -364,6 +365,7 @@ export async function updateBook(id: string, formData: FormData) {
   revalidatePath("/books");
   if (doc?.slug) revalidatePath(`/books/${doc.slug}`);
   revalidatePath("/");
+  revalidatePath("/sitemap.xml");
   return { success: true };
 }
 
@@ -373,6 +375,7 @@ export async function deleteBook(id: string) {
   revalidatePath("/eodud");
   revalidatePath("/books");
   revalidatePath("/");
+  revalidatePath("/sitemap.xml");
   return { success: true };
 }
 
