@@ -1,6 +1,6 @@
 import type { PhotoBook } from "@/types";
 
-const SITE_URL = "https://l.324.ing";
+export const SITE_URL = "https://l.324.ing";
 const SITE_NAME = "Photobook & ArtBook Library";
 
 // ─── WebSite 스키마 (홈페이지) ────────────────────────────────────────────────
@@ -34,10 +34,10 @@ export function generateWebSiteJsonLd() {
 // ─── Book 스키마 (도서 상세) ──────────────────────────────────────────────────
 
 const FORMAT_MAP: Record<string, string> = {
-  hardcover: "Hardcover",
-  softcover: "Paperback",
-  spiral: "Paperback",
-  "box-set": "Hardcover",
+  hardcover: "https://schema.org/Hardcover",
+  softcover: "https://schema.org/Paperback",
+  spiral:    "https://schema.org/Paperback",
+  "box-set": "https://schema.org/Hardcover",
 };
 
 const LANGUAGE_MAP: Record<string, string> = {

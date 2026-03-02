@@ -99,12 +99,12 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "사진책 라이브러리",
-  "url": "https://photobook-library.vercel.app",
+  "url": "https://l.324.ing",
   "description": "개인 소장 사진책 컬렉션 온라인 전시",
   "inLanguage": "ko",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://photobook-library.vercel.app/search?q={search_term_string}",
+    "target": "https://l.324.ing/search?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 }
@@ -130,10 +130,10 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   "isbn": "",
   "inLanguage": "en",
   "bookFormat": "https://schema.org/Hardcover",
-  "image": "https://photobook-library.vercel.app/images/books/the-americans-cover.jpg",
+  "image": "https://l.324.ing/images/books/the-americans-cover.jpg",
   "description": "로버트 프랭크가 1955-1956년 미국 전역을 여행하며 촬영한 83장의 사진으로 구성된 사진집.",
   "genre": "Photography",
-  "url": "https://photobook-library.vercel.app/books/the-americans"
+  "url": "https://l.324.ing/books/the-americans"
 }
 ```
 
@@ -157,19 +157,19 @@ export async function generateMetadata({ params }): Promise<Metadata> {
       "@type": "ListItem",
       "position": 1,
       "name": "홈",
-      "item": "https://photobook-library.vercel.app"
+      "item": "https://l.324.ing"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "컬렉션",
-      "item": "https://photobook-library.vercel.app/books"
+      "item": "https://l.324.ing/books"
     },
     {
       "@type": "ListItem",
       "position": 3,
       "name": "The Americans",
-      "item": "https://photobook-library.vercel.app/books/the-americans"
+      "item": "https://l.324.ing/books/the-americans"
     }
   ]
 }
@@ -182,7 +182,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "name": "사진책 컬렉션",
-  "url": "https://photobook-library.vercel.app/books",
+  "url": "https://l.324.ing/books",
   "description": "사진책 전체 컬렉션 목록",
   "hasPart": [
     { "@type": "Book", "name": "The Americans", "url": "..." }
@@ -207,7 +207,7 @@ Disallow: /search?*
 Disallow: /studio
 
 # Sitemap 위치
-Sitemap: https://photobook-library.vercel.app/sitemap.xml
+Sitemap: https://l.324.ing/sitemap.xml
 ```
 
 **크롤링 정책 근거:**
@@ -234,7 +234,7 @@ import { getAllBooks } from "@/lib/books";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const books = getAllBooks();
-  const baseUrl = "https://photobook-library.vercel.app";
+  const baseUrl = "https://l.324.ing";
 
   const bookUrls = books.map((book) => ({
     url: `${baseUrl}/books/${book.slug}`,
@@ -371,10 +371,10 @@ const nextConfig = {
 
 | 페이지 | URL 패턴 | 카노니컬 |
 |--------|----------|----------|
-| 홈 | `/` | `https://photobook-library.vercel.app/` |
-| 컬렉션 | `/books` | `https://photobook-library.vercel.app/books` |
-| 책 상세 | `/books/{slug}` | `https://photobook-library.vercel.app/books/{slug}` |
-| 검색 | `/search` | `https://photobook-library.vercel.app/search` |
+| 홈 | `/` | `https://l.324.ing/` |
+| 컬렉션 | `/books` | `https://l.324.ing/books` |
+| 책 상세 | `/books/{slug}` | `https://l.324.ing/books/{slug}` |
+| 검색 | `/search` | `https://l.324.ing/search` |
 
 검색 쿼리 파라미터(`/search?q=robert+frank`)는 카노니컬에서 제외하여 중복 인덱싱을 방지합니다.
 

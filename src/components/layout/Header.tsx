@@ -56,7 +56,7 @@ export default function Header({ onSearchClick }: HeaderProps) {
         className="fixed top-0 left-0 right-0 z-50 flex items-center"
         style={{
           height: "var(--header-height)",
-          backgroundColor: "var(--bg-overlay, rgba(13,13,13,0.92))",
+          backgroundColor: "var(--bg-overlay)",
           borderBottom: "1px solid var(--border)",
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",

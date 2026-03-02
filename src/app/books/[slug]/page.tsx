@@ -8,7 +8,7 @@ import {
   getBookNavigation,
   getCategoryBySlug,
 } from "@/lib/books";
-import { generateBookJsonLd, generateBreadcrumbJsonLd } from "@/lib/jsonld";
+import { generateBookJsonLd, generateBreadcrumbJsonLd, SITE_URL } from "@/lib/jsonld";
 import { BookDetailClient } from "@/components/books/BookDetailClient";
 
 // ─── 정적 경로 생성 ───────────────────────────────────────────────────────────
@@ -84,9 +84,9 @@ export default async function BookDetailPage({
 
   const bookJsonLd = generateBookJsonLd(book, categoryName);
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
-    { name: "홈", url: "https://l.324.ing" },
-    { name: "컬렉션", url: "https://l.324.ing/books" },
-    { name: book.title, url: `https://l.324.ing/books/${book.slug}` },
+    { name: "홈", url: SITE_URL },
+    { name: "컬렉션", url: `${SITE_URL}/books` },
+    { name: book.title, url: `${SITE_URL}/books/${book.slug}` },
   ]);
 
   return (
