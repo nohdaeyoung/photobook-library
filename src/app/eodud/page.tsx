@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getAdminBooks, getCategories } from "./actions";
+import { getAdminBooks, getCategories, getSiteSettings } from "./actions";
 import AdminClient from "./AdminClient";
 
 export const metadata: Metadata = {
@@ -10,10 +10,17 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const [books, categories] = await Promise.all([
+  const [books, categories, settings] = await Promise.all([
     getAdminBooks(),
     getCategories(),
+    getSiteSettings(),
   ]);
 
-  return <AdminClient initialBooks={books} categories={categories} />;
+  return (
+    <AdminClient
+      initialBooks={books}
+      categories={categories}
+      initialSettings={settings}
+    />
+  );
 }

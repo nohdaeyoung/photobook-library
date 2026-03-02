@@ -7,6 +7,7 @@ import {
   createBook, updateBook, deleteBook, getAdminBooks,
   uploadImage, fetchBookDataByISBN,
   createCategory, updateCategory, deleteCategory, getCategories,
+  saveSiteSettings,
 } from "./actions";
 
 const RichTextEditor = dynamic(() => import("./RichTextEditor"), { ssr: false });
@@ -46,9 +47,15 @@ interface AdminBook {
   images?: { assetId: string; url: string }[];
 }
 
+interface SiteSettings {
+  headCode?: string;
+  bodyCode?: string;
+}
+
 interface AdminClientProps {
   initialBooks: AdminBook[];
   categories: Category[];
+  initialSettings: SiteSettings | null;
 }
 
 // ─── 도서 등록/수정 폼 ───
@@ -947,9 +954,147 @@ function CategoryForm({
   );
 }
 
+// ─── 사이트 설정 섹션 ───
+function SettingsSection({ initialSettings }: { initialSettings: SiteSettings | null }) {
+  const [headCode, setHeadCode] = useState(initialSettings?.headCode ?? "");
+  const [bodyCode, setBodyCode] = useState(initialSettings?.bodyCode ?? "");
+  const [isPending, startTransition] = useTransition();
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function handleSave() {
+    setError(null);
+    setSaved(false);
+    startTransition(async () => {
+      try {
+        await saveSiteSettings(headCode, bodyCode);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      } catch {
+        setError("저장에 실패했습니다. 다시 시도해주세요.");
+      }
+    });
+  }
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    color: "var(--text-secondary)",
+    marginBottom: "0.25rem",
+    display: "block",
+  };
+  const descStyle: React.CSSProperties = {
+    fontSize: "0.75rem",
+    color: "var(--text-muted)",
+    marginBottom: "0.5rem",
+  };
+  const textareaStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "0.75rem",
+    borderRadius: "0.5rem",
+    backgroundColor: "var(--bg-tertiary)",
+    border: "1px solid var(--border)",
+    color: "var(--text-primary)",
+    fontSize: "0.75rem",
+    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+    lineHeight: 1.6,
+    resize: "vertical",
+  };
+
+  return (
+    <div className="flex flex-col gap-6 max-w-3xl">
+      <div>
+        <h2
+          className="text-lg font-bold mb-1"
+          style={{ fontFamily: "var(--font-heading)", color: "var(--text-primary)" }}
+        >
+          트래킹 코드 설정
+        </h2>
+        <p style={{ fontSize: "0.8125rem", color: "var(--text-muted)" }}>
+          Google Search Console, Tag Manager, Analytics 코드를 입력합니다.
+          저장 후 사이트 전체에 즉시 반영됩니다.
+        </p>
+      </div>
+
+      {/* head 코드 */}
+      <div
+        className="rounded-xl p-5"
+        style={{ backgroundColor: "var(--bg-secondary)", border: "1px solid var(--border)" }}
+      >
+        <label style={labelStyle}>&lt;head&gt; 태그 바로 다음</label>
+        <p style={descStyle}>
+          Google Search Console 인증 메타 태그, GTM head 스크립트, GA 스크립트 등을 여기에 붙여넣으세요.
+        </p>
+        <textarea
+          value={headCode}
+          onChange={(e) => setHeadCode(e.target.value)}
+          rows={10}
+          style={textareaStyle}
+          placeholder={`<!-- Google Search Console -->
+<meta name="google-site-verification" content="YOUR_CODE" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){...})(window,document,'script','dataLayer','GTM-XXXXXX');</script>
+<!-- End Google Tag Manager -->`}
+          spellCheck={false}
+        />
+      </div>
+
+      {/* body 코드 */}
+      <div
+        className="rounded-xl p-5"
+        style={{ backgroundColor: "var(--bg-secondary)", border: "1px solid var(--border)" }}
+      >
+        <label style={labelStyle}>&lt;body&gt; 태그 바로 다음</label>
+        <p style={descStyle}>
+          GTM noscript 등 &lt;body&gt; 태그 직후에 삽입될 코드를 여기에 붙여넣으세요.
+        </p>
+        <textarea
+          value={bodyCode}
+          onChange={(e) => setBodyCode(e.target.value)}
+          rows={6}
+          style={textareaStyle}
+          placeholder={`<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->`}
+          spellCheck={false}
+        />
+      </div>
+
+      {/* 에러 / 성공 메시지 */}
+      {error && (
+        <p style={{ fontSize: "0.8125rem", color: "var(--danger)" }}>{error}</p>
+      )}
+      {saved && (
+        <p style={{ fontSize: "0.8125rem", color: "var(--success)" }}>
+          저장되었습니다. 사이트에 반영되었습니다.
+        </p>
+      )}
+
+      {/* 저장 버튼 */}
+      <div>
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={isPending}
+          className="px-6 py-2.5 rounded-lg text-sm font-medium transition-opacity"
+          style={{
+            backgroundColor: "var(--accent)",
+            color: "#0D0D0D",
+            opacity: isPending ? 0.6 : 1,
+          }}
+        >
+          {isPending ? "저장 중..." : "저장"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── 메인 관리자 컴포넌트 ───
-export default function AdminClient({ initialBooks, categories: initialCategories }: AdminClientProps) {
-  const [activeTab, setActiveTab] = useState<"books" | "categories">("books");
+export default function AdminClient({ initialBooks, categories: initialCategories, initialSettings }: AdminClientProps) {
+  const [activeTab, setActiveTab] = useState<"books" | "categories" | "settings">("books");
   const [books, setBooks] = useState(initialBooks);
   const [categories, setCategories] = useState(initialCategories);
   const [showForm, setShowForm] = useState(false);
@@ -1082,7 +1227,11 @@ export default function AdminClient({ initialBooks, categories: initialCategorie
                 color: "var(--accent)",
               }}
             >
-              {activeTab === "books" ? `${books.length}권` : `${categories.length}개`}
+              {activeTab === "books"
+              ? `${books.length}권`
+              : activeTab === "categories"
+              ? `${categories.length}개`
+              : null}
             </span>
           </div>
         </div>
@@ -1092,6 +1241,7 @@ export default function AdminClient({ initialBooks, categories: initialCategorie
           {([
             { key: "books" as const, label: "도서" },
             { key: "categories" as const, label: "카테고리" },
+            { key: "settings" as const, label: "설정" },
           ]).map((tab) => (
             <button
               key={tab.key}
@@ -1300,6 +1450,10 @@ export default function AdminClient({ initialBooks, categories: initialCategorie
         )}
 
         {/* ─── 카테고리 탭 ─── */}
+        {activeTab === "settings" && (
+          <SettingsSection initialSettings={initialSettings} />
+        )}
+
         {activeTab === "categories" && (
           <>
             <div className="flex justify-end mb-6">

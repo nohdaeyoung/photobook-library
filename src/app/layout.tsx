@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Nanum_Myeongjo } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { client } from "@/sanity/client";
+import { parseHeadCode } from "@/lib/tracking";
 
 const nanumMyeongjo = Nanum_Myeongjo({
   weight: ["400", "700", "800"],
@@ -38,16 +40,43 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+async function getTrackingSettings() {
+  try {
+    return await client.fetch<{ headCode?: string; bodyCode?: string } | null>(
+      `*[_type == "siteSettings"][0] { headCode, bodyCode }`,
+      {},
+      { next: { revalidate: 3600 } }
+    );
+  } catch {
+    return null;
+  }
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getTrackingSettings();
+  const { metaTags, inlineScripts } = parseHeadCode(settings?.headCode);
+
   return (
     <html lang="ko" data-theme="dark">
+      <head>
+        {metaTags.map((attrs, i) => (
+          <meta key={i} {...attrs} />
+        ))}
+        {inlineScripts.map((content, i) => (
+          // eslint-disable-next-line @next/next/no-before-interactive-script-outside-document
+          <script key={i} dangerouslySetInnerHTML={{ __html: content }} />
+        ))}
+      </head>
       <body
         className={`${nanumMyeongjo.variable} ${pretendard.variable} antialiased`}
       >
+        {settings?.bodyCode && (
+          <div dangerouslySetInnerHTML={{ __html: settings.bodyCode }} />
+        )}
         {children}
       </body>
     </html>

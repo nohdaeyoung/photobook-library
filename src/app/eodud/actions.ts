@@ -375,3 +375,33 @@ export async function deleteBook(id: string) {
   revalidatePath("/");
   return { success: true };
 }
+
+// ─── 사이트 설정 조회 ───
+export async function getSiteSettings(): Promise<{
+  _id?: string;
+  headCode?: string;
+  bodyCode?: string;
+} | null> {
+  return adminClient.fetch(
+    `*[_type == "siteSettings"][0] { _id, headCode, bodyCode }`
+  );
+}
+
+// ─── 사이트 설정 저장 ───
+export async function saveSiteSettings(headCode: string, bodyCode: string) {
+  const existing = await adminClient.fetch<{ _id: string } | null>(
+    `*[_type == "siteSettings"][0] { _id }`
+  );
+
+  if (existing?._id) {
+    await adminClient
+      .patch(existing._id)
+      .set({ headCode, bodyCode })
+      .commit();
+  } else {
+    await adminClient.create({ _type: "siteSettings", headCode, bodyCode });
+  }
+
+  revalidatePath("/");
+  return { success: true as const };
+}
