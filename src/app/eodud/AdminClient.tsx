@@ -487,28 +487,50 @@ function BookForm({
                   />
                 </div>
               )}
-              <label
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg cursor-pointer transition-colors text-sm"
-                style={{
-                  backgroundColor: "var(--bg-tertiary)",
-                  border: "1px dashed var(--border)",
-                  color: "var(--text-muted)",
-                }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="17 8 12 3 7 8" />
-                  <line x1="12" y1="3" x2="12" y2="15" />
-                </svg>
-                {uploading ? "업로드 중..." : coverPreview ? "이미지 변경" : "이미지 선택"}
+              <div className="flex-1 flex flex-col gap-2">
+                <label
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg cursor-pointer transition-colors text-sm"
+                  style={{
+                    backgroundColor: "var(--bg-tertiary)",
+                    border: "1px dashed var(--border)",
+                    color: "var(--text-muted)",
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                  {uploading ? "업로드 중..." : coverPreview ? "이미지 변경" : "이미지 선택"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleCoverUpload}
+                    disabled={uploading}
+                  />
+                </label>
                 <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleCoverUpload}
-                  disabled={uploading}
+                  type="url"
+                  value={isbnCoverUrl}
+                  onChange={(e) => {
+                    setIsbnCoverUrl(e.target.value);
+                    if (e.target.value) {
+                      setCoverPreview(e.target.value);
+                      setCoverAssetId(null);
+                    } else if (!coverAssetId) {
+                      setCoverPreview(null);
+                    }
+                  }}
+                  placeholder="또는 이미지 URL 입력"
+                  className="px-3 py-2 rounded-lg text-sm"
+                  style={{
+                    backgroundColor: "var(--bg-tertiary)",
+                    border: "1px solid var(--border)",
+                    color: "var(--text-primary)",
+                  }}
                 />
-              </label>
+              </div>
             </div>
           </div>
 
