@@ -122,6 +122,42 @@ async function fetchFromOpenLibrary(isbn: string): Promise<ISBNBookData | null> 
   return result;
 }
 
+async function fetchFromNationalLibrary(isbn: string): Promise<ISBNBookData | null> {
+  const apiKey = process.env.NL_API_KEY;
+  if (!apiKey) return null;
+
+  // ISBN-13만 지원
+  const isbn13 = isbn.length === 13 ? isbn : null;
+  if (!isbn13) return null;
+
+  const url = `https://seoji.nl.go.kr/landingPage/BookDetailService.do?isbn13=${isbn13}&cert_key=${apiKey}&result_style=json`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  if (data.errorYN === "Y" || !data.docs || data.docs.length === 0) return null;
+
+  const doc = data.docs[0];
+
+  const dateStr = doc.PUBLISH_PREDATE || "";
+  const year = dateStr.length >= 4 ? parseInt(dateStr.slice(0, 4)) : undefined;
+
+  const pages = doc.PAGE ? parseInt(doc.PAGE) : undefined;
+
+  const langMap: Record<string, string> = { KOR: "ko", ENG: "en", JPN: "ja" };
+  const language = langMap[doc.LANGUAGE?.toUpperCase()] || (doc.LANGUAGE ? "other" : undefined);
+
+  return {
+    title: doc.TITLE || undefined,
+    author: doc.AUTHOR || undefined,
+    year: year && !isNaN(year) ? year : undefined,
+    pages: pages && !isNaN(pages) ? pages : undefined,
+    publisher: doc.PUBLISHER || undefined,
+    language,
+    coverUrl: doc.TITLE_URL || undefined,
+  };
+}
+
 async function fetchFromKakaoBooks(isbn: string): Promise<ISBNBookData | null> {
   const apiKey = process.env.KAKAO_REST_API_KEY;
   if (!apiKey) return null;
@@ -171,7 +207,15 @@ export async function fetchBookByISBN(rawISBN: string): Promise<ISBNBookData | n
     // fallback
   }
 
-  // 2차: 카카오 책 검색 API
+  // 2차: 국립중앙도서관 SEOJI API (한국어 ISBN에 강점)
+  try {
+    const result = await fetchFromNationalLibrary(isbn);
+    if (result && result.title) return result;
+  } catch {
+    // fallback
+  }
+
+  // 3차: 카카오 책 검색 API
   try {
     const result = await fetchFromKakaoBooks(isbn);
     if (result && result.title) return result;
@@ -179,7 +223,7 @@ export async function fetchBookByISBN(rawISBN: string): Promise<ISBNBookData | n
     // fallback
   }
 
-  // 3차: Open Library API
+  // 4차: Open Library API
   try {
     const result = await fetchFromOpenLibrary(isbn);
     if (result && result.title) return result;
