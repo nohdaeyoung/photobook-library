@@ -113,6 +113,7 @@ export function BookMeta({ book, onOpenViewer }: BookMetaProps) {
           size="lg"
           className="w-full sm:w-auto"
           onClick={onOpenViewer}
+          disabled={!book.images || book.images.length === 0}
         >
           <svg
             width="18"
