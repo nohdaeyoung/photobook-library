@@ -194,20 +194,12 @@ async function fetchFromKakaoBooks(isbn: string): Promise<ISBNBookData | null> {
   return result;
 }
 
-/** Google Books → 카카오 → Open Library 순서로 ISBN 조회 */
+/** 국립중앙도서관 → 카카오 → Open Library → Google Books 순서로 ISBN 조회 */
 export async function fetchBookByISBN(rawISBN: string): Promise<ISBNBookData | null> {
   const isbn = validateISBN(rawISBN);
   if (!isbn) return null;
 
-  // 1차: Google Books API
-  try {
-    const result = await fetchFromGoogleBooks(isbn);
-    if (result && result.title) return result;
-  } catch {
-    // fallback
-  }
-
-  // 2차: 국립중앙도서관 SEOJI API (한국어 ISBN에 강점)
+  // 1차: 국립중앙도서관 SEOJI API
   try {
     const result = await fetchFromNationalLibrary(isbn);
     if (result && result.title) return result;
@@ -215,7 +207,7 @@ export async function fetchBookByISBN(rawISBN: string): Promise<ISBNBookData | n
     // fallback
   }
 
-  // 3차: 카카오 책 검색 API
+  // 2차: 카카오 책 검색 API
   try {
     const result = await fetchFromKakaoBooks(isbn);
     if (result && result.title) return result;
@@ -223,9 +215,17 @@ export async function fetchBookByISBN(rawISBN: string): Promise<ISBNBookData | n
     // fallback
   }
 
-  // 4차: Open Library API
+  // 3차: Open Library API
   try {
     const result = await fetchFromOpenLibrary(isbn);
+    if (result && result.title) return result;
+  } catch {
+    // fallback
+  }
+
+  // 4차: Google Books API
+  try {
+    const result = await fetchFromGoogleBooks(isbn);
     if (result && result.title) return result;
   } catch {
     // 모두 실패
