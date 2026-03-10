@@ -8,21 +8,15 @@ import Breadcrumb from "@/components/layout/Breadcrumb";
 import FilterSidebar from "@/components/ui/FilterSidebar";
 import { BookCard } from "@/components/book/BookCard";
 import SearchModal from "@/components/search/SearchModal";
+import { ActiveFilterBadge } from "@/components/books/ActiveFilterBadge";
+import { SortSelect, type SortKey } from "@/components/books/SortSelect";
+import { EmptyState } from "@/components/books/EmptyState";
+import { LoadMoreButton, LOAD_MORE_STEP } from "@/components/books/LoadMoreButton";
 import type { PhotoBook, Category } from "@/types";
 
 // ─── 상수 ────────────────────────────────────────────────────────────────────
 
 const INITIAL_VISIBLE = 12;
-const LOAD_MORE_STEP = 12;
-
-type SortKey = "newest" | "oldest" | "title" | "author";
-
-const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "newest", label: "최신순" },
-  { value: "oldest", label: "오래된순" },
-  { value: "title", label: "제목순" },
-  { value: "author", label: "작가순" },
-];
 
 const BREADCRUMB_ITEMS = [
   { label: "홈", href: "/" },
@@ -65,16 +59,11 @@ export default function BooksClient({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // 검색 모달 상태
   const [searchOpen, setSearchOpen] = useState(false);
-
-  // 정렬 상태
   const [sortKey, setSortKey] = useState<SortKey>("newest");
-
-  // 더 보기 상태
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // URL searchParams에서 필터 상태 읽기
   const selectedCategory = searchParams.get("category") ?? null;
   const selectedTagsRaw = searchParams.get("tags") ?? "";
   const selectedTags = useMemo(
@@ -83,7 +72,6 @@ export default function BooksClient({
   );
   const featuredOnly = searchParams.get("featured") === "true";
 
-  // FilterSidebar에 넘길 카테고리 목록 (bookCount 포함)
   const sidebarCategories = useMemo(
     () =>
       categories.map((cat) => ({
@@ -144,21 +132,9 @@ export default function BooksClient({
 
   const filteredBooks = useMemo(() => {
     let result = initialBooks;
-
-    if (featuredOnly) {
-      result = result.filter((b) => b.featured);
-    }
-
-    if (selectedCategory) {
-      result = result.filter((b) => b.category === selectedCategory);
-    }
-
-    if (selectedTags.length > 0) {
-      result = result.filter((b) =>
-        selectedTags.every((tag) => b.tags.includes(tag))
-      );
-    }
-
+    if (featuredOnly) result = result.filter((b) => b.featured);
+    if (selectedCategory) result = result.filter((b) => b.category === selectedCategory);
+    if (selectedTags.length > 0) result = result.filter((b) => selectedTags.every((tag) => b.tags.includes(tag)));
     return sortBooks(result, sortKey);
   }, [initialBooks, selectedCategory, selectedTags, sortKey, featuredOnly]);
 
@@ -196,10 +172,7 @@ export default function BooksClient({
             >
               컬렉션
             </h1>
-            <p
-              className="mt-2 text-sm"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
               사진책 전체 목록을 탐색하세요
             </p>
           </div>
@@ -207,9 +180,9 @@ export default function BooksClient({
 
         {/* 본문: 사이드바 + 메인 그리드 */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex gap-8 items-start">
+          <div className="flex flex-col gap-4 lg:flex-row lg:gap-8 items-start">
 
-            {/* ── 사이드바 (데스크탑: 고정 너비, 모바일: 버튼) ── */}
+            {/* ── 사이드바 ── */}
             <FilterSidebar
               categories={sidebarCategories}
               tags={tags}
@@ -220,40 +193,28 @@ export default function BooksClient({
               onTagChange={handleTagChange}
               onFeaturedChange={handleFeaturedChange}
               onReset={handleReset}
+              mobileOpen={mobileFilterOpen}
+              onMobileOpenChange={setMobileFilterOpen}
             />
 
             {/* ── 메인 컨텐츠 영역 ── */}
             <div className="flex-1 min-w-0">
 
-              {/* 상단 바: 모바일 필터 버튼 + 결과 카운트 + 정렬 */}
+              {/* 상단 바: 결과 카운트 + 활성 필터 + (모바일) 필터 버튼 + 정렬 */}
               <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
-
-                {/* 왼쪽: 모바일 필터 버튼 자리 + 결과 카운트 */}
                 <div className="flex items-center gap-3 flex-wrap">
-                  {/* 모바일 필터 버튼은 FilterSidebar 내부에서 렌더 */}
-                  <span
-                    className="text-sm tabular-nums"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    <span
-                      className="font-semibold"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                  <span className="text-sm tabular-nums" style={{ color: "var(--text-muted)" }}>
+                    <span className="font-semibold" style={{ color: "var(--text-primary)" }}>
                       {filteredBooks.length}
                     </span>
                     권의 사진책
                   </span>
 
-                  {/* 활성 필터 뱃지 */}
                   {(selectedCategory || selectedTags.length > 0) && (
                     <div className="flex items-center gap-2 flex-wrap">
                       {selectedCategory && (
                         <ActiveFilterBadge
-                          label={
-                            sidebarCategories.find(
-                              (c) => c.slug === selectedCategory
-                            )?.name ?? selectedCategory
-                          }
+                          label={sidebarCategories.find((c) => c.slug === selectedCategory)?.name ?? selectedCategory}
                           onRemove={() => handleCategoryChange(null)}
                         />
                       )}
@@ -268,8 +229,35 @@ export default function BooksClient({
                   )}
                 </div>
 
-                {/* 오른쪽: 정렬 드롭다운 */}
-                <SortSelect value={sortKey} onChange={setSortKey} />
+                <div className="flex items-center gap-2">
+                  {/* 모바일 필터 버튼 */}
+                  <button
+                    className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-150"
+                    onClick={() => setMobileFilterOpen(true)}
+                    style={{
+                      backgroundColor: (selectedCategory || selectedTags.length > 0 || featuredOnly) ? "var(--accent-muted)" : "var(--bg-secondary)",
+                      color: (selectedCategory || selectedTags.length > 0 || featuredOnly) ? "var(--accent)" : "var(--text-secondary)",
+                      border: `1px solid ${(selectedCategory || selectedTags.length > 0 || featuredOnly) ? "var(--accent)" : "var(--border-light)"}`,
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <line x1="4" y1="6" x2="20" y2="6" />
+                      <line x1="8" y1="12" x2="16" y2="12" />
+                      <line x1="11" y1="18" x2="13" y2="18" />
+                    </svg>
+                    필터
+                    {(selectedCategory || selectedTags.length > 0) && (
+                      <span
+                        className="w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center"
+                        style={{ backgroundColor: "var(--accent)", color: "var(--text-on-accent)" }}
+                      >
+                        {(selectedCategory ? 1 : 0) + selectedTags.length}
+                      </span>
+                    )}
+                  </button>
+
+                  <SortSelect value={sortKey} onChange={setSortKey} />
+                </div>
               </div>
 
               {/* 그리드 or 빈 상태 */}
@@ -279,22 +267,15 @@ export default function BooksClient({
                 <>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
                     {visibleBooks.map((book, index) => (
-                      <BookCard
-                        key={book.id}
-                        book={book}
-                        priority={index < 6}
-                      />
+                      <BookCard key={book.id} book={book} priority={index < 6} />
                     ))}
                   </div>
 
-                  {/* 더 보기 버튼 */}
                   {hasMore && (
                     <div className="mt-10 flex justify-center">
                       <LoadMoreButton
                         remaining={filteredBooks.length - visibleCount}
-                        onClick={() =>
-                          setVisibleCount((prev) => prev + LOAD_MORE_STEP)
-                        }
+                        onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_STEP)}
                       />
                     </div>
                   )}
@@ -307,259 +288,5 @@ export default function BooksClient({
 
       <Footer />
     </>
-  );
-}
-
-// ─── 서브 컴포넌트: 활성 필터 뱃지 ──────────────────────────────────────────
-
-function ActiveFilterBadge({
-  label,
-  onRemove,
-}: {
-  label: string;
-  onRemove: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onRemove}
-      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-150"
-      style={{
-        backgroundColor: "var(--accent-muted)",
-        color: "var(--accent)",
-        border: "1px solid var(--accent)",
-      }}
-      aria-label={`${label} 필터 제거`}
-    >
-      <span>{label}</span>
-      {/* X 아이콘 */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="10"
-        height="10"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <line x1="18" y1="6" x2="6" y2="18" />
-        <line x1="6" y1="6" x2="18" y2="18" />
-      </svg>
-    </button>
-  );
-}
-
-// ─── 서브 컴포넌트: 정렬 드롭다운 ────────────────────────────────────────────
-
-function SortSelect({
-  value,
-  onChange,
-}: {
-  value: SortKey;
-  onChange: (v: SortKey) => void;
-}) {
-  return (
-    <div className="relative">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value as SortKey)}
-        className="appearance-none text-sm pl-3 pr-8 py-2 rounded-lg cursor-pointer transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2"
-        style={{
-          backgroundColor: "var(--bg-secondary)",
-          color: "var(--text-secondary)",
-          border: "1px solid var(--border)",
-        }}
-        aria-label="정렬 기준 선택"
-      >
-        {SORT_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-      {/* 드롭다운 화살표 */}
-      <span
-        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2"
-        style={{ color: "var(--text-muted)" }}
-        aria-hidden="true"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </span>
-    </div>
-  );
-}
-
-// ─── 서브 컴포넌트: 빈 상태 ──────────────────────────────────────────────────
-
-function EmptyState({ onReset }: { onReset: () => void }) {
-  return (
-    <div
-      className="flex flex-col items-center justify-center py-24 text-center rounded-2xl"
-      style={{
-        backgroundColor: "var(--bg-secondary)",
-        border: "1px solid var(--border)",
-      }}
-    >
-      {/* 아이콘 */}
-      <div
-        className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
-        style={{ backgroundColor: "var(--bg-tertiary)" }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="28"
-          height="28"
-          viewBox="0 0 48 48"
-          fill="none"
-          aria-hidden="true"
-          style={{ color: "var(--text-muted)" }}
-        >
-          <rect
-            x="8"
-            y="4"
-            width="28"
-            height="36"
-            rx="3"
-            stroke="currentColor"
-            strokeWidth="2"
-            fill="none"
-          />
-          <rect
-            x="12"
-            y="8"
-            width="20"
-            height="2"
-            rx="1"
-            fill="currentColor"
-            opacity="0.5"
-          />
-          <rect
-            x="12"
-            y="13"
-            width="20"
-            height="2"
-            rx="1"
-            fill="currentColor"
-            opacity="0.5"
-          />
-          <rect
-            x="12"
-            y="18"
-            width="14"
-            height="2"
-            rx="1"
-            fill="currentColor"
-            opacity="0.3"
-          />
-          <line
-            x1="8"
-            y1="6"
-            x2="8"
-            y2="38"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
-
-      <p
-        className="text-base font-medium mb-2"
-        style={{ color: "var(--text-secondary)" }}
-      >
-        조건에 맞는 사진책이 없습니다
-      </p>
-      <p
-        className="text-sm mb-6 max-w-xs"
-        style={{ color: "var(--text-muted)" }}
-      >
-        다른 카테고리나 태그를 선택하거나 필터를 초기화해 보세요.
-      </p>
-
-      <button
-        type="button"
-        onClick={onReset}
-        className="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150"
-        style={{
-          backgroundColor: "var(--accent)",
-          color: "var(--text-on-accent)",
-        }}
-        onMouseEnter={(e) =>
-          (e.currentTarget.style.backgroundColor = "var(--accent-hover)")
-        }
-        onMouseLeave={(e) =>
-          (e.currentTarget.style.backgroundColor = "var(--accent)")
-        }
-      >
-        필터 초기화
-      </button>
-    </div>
-  );
-}
-
-// ─── 서브 컴포넌트: 더 보기 버튼 ─────────────────────────────────────────────
-
-function LoadMoreButton({
-  remaining,
-  onClick,
-}: {
-  remaining: number;
-  onClick: () => void;
-}) {
-  const loadCount = Math.min(remaining, LOAD_MORE_STEP);
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group inline-flex items-center gap-2.5 px-8 py-3 rounded-full text-sm font-medium transition-all duration-200"
-      style={{
-        backgroundColor: "var(--bg-secondary)",
-        color: "var(--text-secondary)",
-        border: "1px solid var(--border)",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "var(--accent)";
-        e.currentTarget.style.color = "var(--accent)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "var(--border)";
-        e.currentTarget.style.color = "var(--text-secondary)";
-      }}
-    >
-      <span>{loadCount}권 더 보기</span>
-      {/* 아래 화살표 아이콘 */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="15"
-        height="15"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="transition-transform duration-200 group-hover:translate-y-0.5"
-        aria-hidden="true"
-      >
-        <line x1="12" y1="5" x2="12" y2="19" />
-        <polyline points="19 12 12 19 5 12" />
-      </svg>
-    </button>
   );
 }
