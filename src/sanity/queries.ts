@@ -15,12 +15,14 @@ const bookProjection = `{
   content,
   "coverImage": coverImage {
     "src": asset->url,
+    "blurDataURL": asset->metadata.lqip,
     "width": asset->metadata.dimensions.width,
     "height": asset->metadata.dimensions.height,
     alt
   },
   "images": images[] {
     "src": asset->url,
+    "blurDataURL": asset->metadata.lqip,
     "width": asset->metadata.dimensions.width,
     "height": asset->metadata.dimensions.height,
     alt
@@ -29,6 +31,7 @@ const bookProjection = `{
   publisher,
   isbn,
   coverUrl,
+  bookUrl,
   language,
   format
 }`;

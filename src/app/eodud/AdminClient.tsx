@@ -43,6 +43,7 @@ interface AdminBook {
   format?: string;
   isbn?: string;
   coverUrl?: string;
+  bookUrl?: string;
   coverImageUrl?: string;
   images?: { assetId: string; url: string }[];
 }
@@ -93,6 +94,7 @@ function BookForm({
   const [publisher, setPublisher] = useState(editBook?.publisher || "");
   const [description, setDescription] = useState(editBook?.description || "");
   const [language, setLanguage] = useState(editBook?.language || "");
+  const [bookUrl, setBookUrl] = useState(editBook?.bookUrl || "");
 
   // 갤러리 이미지 상태
   const [galleryImages, setGalleryImages] = useState<{ assetId: string; url: string }[]>(
@@ -206,6 +208,7 @@ function BookForm({
     formData.set("content", contentHtml);
     formData.set("isbn", isbnValue.trim());
     formData.set("coverUrl", isbnCoverUrl);
+    formData.set("bookUrl", bookUrl);
     if (coverAssetId) {
       formData.set("coverImageAssetId", coverAssetId);
     }
@@ -460,6 +463,25 @@ function BookForm({
               name="tags"
               defaultValue={editBook?.tags?.join(", ")}
               placeholder="흑백, 다큐, 거리"
+              className="px-3 py-2 rounded-lg text-sm"
+              style={{
+                backgroundColor: "var(--bg-tertiary)",
+                border: "1px solid var(--border)",
+                color: "var(--text-primary)",
+              }}
+            />
+          </label>
+
+          {/* 도서 링크 */}
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+              도서 링크 (구매 링크, 출판사 페이지 등)
+            </span>
+            <input
+              type="url"
+              value={bookUrl}
+              onChange={(e) => setBookUrl(e.target.value)}
+              placeholder="https://..."
               className="px-3 py-2 rounded-lg text-sm"
               style={{
                 backgroundColor: "var(--bg-tertiary)",

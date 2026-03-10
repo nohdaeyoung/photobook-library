@@ -191,6 +191,7 @@ export async function getAdminBooks() {
       format,
       isbn,
       coverUrl,
+      bookUrl,
       "coverImageUrl": coverImage.asset->url,
       "images": images[] { "assetId": asset._ref, "url": asset->url }
     }`
@@ -218,6 +219,7 @@ export async function getAdminBook(id: string) {
       format,
       isbn,
       coverUrl,
+      bookUrl,
       "coverImageUrl": coverImage.asset->url,
       "images": images[] { "assetId": asset._ref, "url": asset->url }
     }`,
@@ -246,6 +248,7 @@ export async function createBook(formData: FormData) {
   const coverImageAssetId = formData.get("coverImageAssetId") as string;
   const isbn = formData.get("isbn") as string;
   const coverUrl = formData.get("coverUrl") as string;
+  const bookUrl = formData.get("bookUrl") as string;
   const imageAssetIds = formData.getAll("imageAssetIds") as string[];
 
   const slug = titleEn ? toSlug(titleEn) : toSlug(title);
@@ -268,6 +271,7 @@ export async function createBook(formData: FormData) {
     format: format || undefined,
     isbn: isbn || undefined,
     coverUrl: coverUrl || undefined,
+    bookUrl: bookUrl || undefined,
   };
 
   if (coverImageAssetId) {
@@ -287,6 +291,7 @@ export async function createBook(formData: FormData) {
 
   const created = await adminClient.create(doc);
   const newSlug = (created.slug as { current: string })?.current;
+
   revalidatePath("/eodud");
   revalidatePath("/books");
   if (newSlug) revalidatePath(`/books/${newSlug}`);
@@ -316,6 +321,7 @@ export async function updateBook(id: string, formData: FormData) {
   const coverImageAssetId = formData.get("coverImageAssetId") as string;
   const isbn = formData.get("isbn") as string;
   const coverUrl = formData.get("coverUrl") as string;
+  const bookUrl = formData.get("bookUrl") as string;
   const imageAssetIds = formData.getAll("imageAssetIds") as string[];
 
   const updates: Record<string, unknown> = {
@@ -334,6 +340,7 @@ export async function updateBook(id: string, formData: FormData) {
     format: format || undefined,
     isbn: isbn || undefined,
     coverUrl: coverUrl || undefined,
+    bookUrl: bookUrl || undefined,
   };
 
   if (coverImageAssetId) {
@@ -361,6 +368,7 @@ export async function updateBook(id: string, formData: FormData) {
     `*[_type == "book" && _id == $id][0] { "slug": slug.current }`,
     { id }
   );
+
   revalidatePath("/eodud");
   revalidatePath("/books");
   if (doc?.slug) revalidatePath(`/books/${doc.slug}`);
@@ -372,6 +380,7 @@ export async function updateBook(id: string, formData: FormData) {
 // ─── 도서 삭제 ───
 export async function deleteBook(id: string) {
   await adminClient.delete(id);
+
   revalidatePath("/eodud");
   revalidatePath("/books");
   revalidatePath("/");

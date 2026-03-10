@@ -107,7 +107,7 @@ export function BookMeta({ book, onOpenViewer }: BookMetaProps) {
       )}
 
       {/* CTA 버튼 */}
-      <div className="pt-2">
+      <div className="pt-2 flex flex-wrap gap-3">
         <Button
           variant="primary"
           size="lg"
@@ -139,6 +139,26 @@ export function BookMeta({ book, onOpenViewer }: BookMetaProps) {
           </svg>
           사진책 열기
         </Button>
+
+        {book.bookUrl && (
+          <a
+            href={book.bookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium",
+              "border border-[var(--border)] text-[var(--text-secondary)]",
+              "transition-all duration-150 hover:border-[var(--accent)] hover:text-[var(--accent)]",
+            )}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+            도서 페이지
+          </a>
+        )}
       </div>
     </div>
   );

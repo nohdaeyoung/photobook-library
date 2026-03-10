@@ -122,6 +122,12 @@ export default defineType({
       description: "ISBN 조회로 가져온 외부 표지 이미지 URL (coverImage 미등록 시 사용)",
     }),
     defineField({
+      name: "bookUrl",
+      title: "도서 링크",
+      type: "url",
+      description: "도서 상세 페이지 URL (구매 링크, 출판사 페이지 등)",
+    }),
+    defineField({
       name: "language",
       title: "언어",
       type: "string",
