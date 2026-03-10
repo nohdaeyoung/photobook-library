@@ -95,6 +95,7 @@ function BookForm({
   const [description, setDescription] = useState(editBook?.description || "");
   const [language, setLanguage] = useState(editBook?.language || "");
   const [bookUrl, setBookUrl] = useState(editBook?.bookUrl || "");
+  const [slug, setSlug] = useState(editBook?.slug || "");
 
   // 갤러리 이미지 상태
   const [galleryImages, setGalleryImages] = useState<{ assetId: string; url: string }[]>(
@@ -209,6 +210,7 @@ function BookForm({
     formData.set("isbn", isbnValue.trim());
     formData.set("coverUrl", isbnCoverUrl);
     formData.set("bookUrl", bookUrl);
+    if (isEdit) formData.set("slug", slug);
     if (coverAssetId) {
       formData.set("coverImageAssetId", coverAssetId);
     }
@@ -369,6 +371,50 @@ function BookForm({
               />
             </label>
           </div>
+
+          {/* 퍼머링크 (수정 시에만 표시) */}
+          {isEdit && (
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+                퍼머링크 (URL)
+              </span>
+              <div
+                className="flex items-center rounded-lg overflow-hidden"
+                style={{ border: "1px solid var(--border)" }}
+              >
+                <span
+                  className="px-3 py-2 text-sm whitespace-nowrap flex-shrink-0"
+                  style={{
+                    backgroundColor: "var(--bg-primary)",
+                    color: "var(--text-muted)",
+                    borderRight: "1px solid var(--border)",
+                  }}
+                >
+                  /books/
+                </span>
+                <input
+                  value={slug}
+                  onChange={(e) => {
+                    // 영문 소문자·숫자·하이픈·한글만 허용
+                    const sanitized = e.target.value
+                      .toLowerCase()
+                      .replace(/[^a-z0-9가-힣\-]/g, "")
+                      .replace(/-+/g, "-");
+                    setSlug(sanitized);
+                  }}
+                  placeholder="url-slug"
+                  className="flex-1 px-3 py-2 text-sm outline-none"
+                  style={{
+                    backgroundColor: "var(--bg-tertiary)",
+                    color: "var(--text-primary)",
+                  }}
+                />
+              </div>
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                변경 시 기존 URL로의 접근이 불가해집니다.
+              </span>
+            </div>
+          )}
 
           {/* 작가 / 연도 */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

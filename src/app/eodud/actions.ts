@@ -322,11 +322,15 @@ export async function updateBook(id: string, formData: FormData) {
   const isbn = formData.get("isbn") as string;
   const coverUrl = formData.get("coverUrl") as string;
   const bookUrl = formData.get("bookUrl") as string;
+  const slugInput = (formData.get("slug") as string || "").trim();
   const imageAssetIds = formData.getAll("imageAssetIds") as string[];
+
+  const slug = slugInput ? toSlug(slugInput) : (titleEn ? toSlug(titleEn) : toSlug(title));
 
   const updates: Record<string, unknown> = {
     title,
     titleEn: titleEn || undefined,
+    slug: { _type: "slug" as const, current: slug },
     author,
     year,
     pages,
