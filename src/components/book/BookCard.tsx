@@ -13,21 +13,18 @@ interface BookCardProps {
 
 const sizeStyles = {
   sm: {
-    card: "w-40",
     title: "text-sm",
     meta: "text-xs",
     tagText: "text-xs px-2 py-0.5",
     info: "p-2.5 gap-1",
   },
   md: {
-    card: "w-56",
     title: "text-base",
     meta: "text-sm",
     tagText: "text-xs px-2.5 py-1",
     info: "p-3 gap-1.5",
   },
   lg: {
-    card: "w-72",
     title: "text-lg",
     meta: "text-sm",
     tagText: "text-xs px-3 py-1",
@@ -45,13 +42,12 @@ export function BookCard({ book, priority = false, size = "md" }: BookCardProps)
     <Link
       href={`/books/${book.slug}`}
       className={cn(
-        "group flex flex-col flex-shrink-0",
+        "group flex flex-col w-full",
         "rounded-[var(--radius-lg)] overflow-hidden",
         "bg-[var(--bg-card)] border border-[var(--border)]",
         "shadow-[var(--shadow-card)]",
         "transition-all duration-[250ms] ease-[ease]",
         "hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] hover:border-[var(--border-hover)]",
-        styles.card,
       )}
     >
       {/* 커버 이미지 영역 */}
@@ -63,10 +59,10 @@ export function BookCard({ book, priority = false, size = "md" }: BookCardProps)
             fill
             sizes={
               size === "sm"
-                ? "(max-width: 640px) 50vw, 160px"
+                ? "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 : size === "lg"
-                  ? "(max-width: 640px) 80vw, 288px"
-                  : "(max-width: 640px) 60vw, 224px"
+                  ? "(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 33vw"
+                  : "(max-width: 1024px) 50vw, 25vw"
             }
             className={cn(
               "object-cover",

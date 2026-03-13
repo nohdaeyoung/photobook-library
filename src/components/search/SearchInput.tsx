@@ -65,8 +65,10 @@ export default function SearchInput({
       </svg>
 
       {/* Input */}
+      <label htmlFor="search-input" className="sr-only">사진책 검색</label>
       <input
         ref={inputRef}
+        id="search-input"
         type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}

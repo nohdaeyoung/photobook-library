@@ -1,0 +1,661 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-03-11T00:35:57.466Z",
+  "activeFeatures": [
+    "eodud",
+    "photobook-library",
+    "home",
+    "ui",
+    "books",
+    "schemas",
+    "sanity",
+    "book",
+    "camera-archive",
+    "cameras",
+    "work",
+    "moment",
+    "projects",
+    "[id]",
+    "photos",
+    "blocks",
+    "new",
+    "admin",
+    "complete",
+    "[slug]"
+  ],
+  "primaryFeature": "eodud",
+  "features": {
+    "eodud": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-07T14:52:57.803Z",
+        "lastUpdated": "2026-03-10T04:57:29.048Z"
+      },
+      "lastFile": "/Volumes/Dev/photobook-library/src/app/eodud/AdminClient.tsx"
+    },
+    "photobook-library": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T01:08:21.978Z",
+        "lastUpdated": "2026-03-10T04:50:20.888Z"
+      },
+      "lastFile": "/Volumes/Dev/photobook-library/src/types/index.ts"
+    },
+    "home": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T02:34:08.224Z",
+        "lastUpdated": "2026-03-10T02:34:08.224Z"
+      },
+      "lastFile": "/Volumes/Dev/photobook-library/src/components/home/HomeClient.tsx"
+    },
+    "ui": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T03:56:38.198Z",
+        "lastUpdated": "2026-03-10T03:57:04.212Z"
+      },
+      "lastFile": "/Volumes/Dev/photobook-library/src/components/ui/FilterSidebar.tsx"
+    },
+    "books": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T03:57:13.963Z",
+        "lastUpdated": "2026-03-10T03:57:45.225Z"
+      },
+      "lastFile": "/Volumes/Dev/photobook-library/src/components/books/BooksClient.tsx"
+    },
+    "schemas": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T04:42:52.954Z",
+        "lastUpdated": "2026-03-10T04:42:52.954Z"
+      },
+      "lastFile": "/Volumes/Dev/photobook-library/src/sanity/schemas/book.ts"
+    },
+    "sanity": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T04:50:27.988Z",
+        "lastUpdated": "2026-03-10T04:50:27.988Z"
+      },
+      "lastFile": "/Volumes/Dev/photobook-library/src/sanity/queries.ts"
+    },
+    "book": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T04:52:51.904Z",
+        "lastUpdated": "2026-03-10T05:11:23.548Z"
+      },
+      "lastFile": "/Volumes/Dev/photobook-library/src/components/book/BookMeta.tsx"
+    },
+    "camera-archive": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T23:46:10.311Z",
+        "lastUpdated": "2026-03-11T00:35:57.466Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/components/BlockRenderer.tsx"
+    },
+    "cameras": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T23:47:03.120Z",
+        "lastUpdated": "2026-03-10T23:47:03.120Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/cameras/page.tsx"
+    },
+    "work": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T23:48:06.178Z",
+        "lastUpdated": "2026-03-10T23:48:06.178Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/work/page.tsx"
+    },
+    "moment": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-10T23:48:21.884Z",
+        "lastUpdated": "2026-03-10T23:48:21.884Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/moment/page.tsx"
+    },
+    "projects": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T00:06:32.531Z",
+        "lastUpdated": "2026-03-11T00:08:16.714Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/admin/projects/page.tsx"
+    },
+    "[id]": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T00:06:47.823Z",
+        "lastUpdated": "2026-03-11T00:27:25.560Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/admin/projects/[id]/page.tsx"
+    },
+    "photos": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T00:07:06.120Z",
+        "lastUpdated": "2026-03-11T00:25:57.382Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/api/admin/projects/[id]/photos/route.ts"
+    },
+    "blocks": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T00:07:25.314Z",
+        "lastUpdated": "2026-03-11T00:07:25.314Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/api/admin/projects/[id]/blocks/route.ts"
+    },
+    "new": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T00:11:49.748Z",
+        "lastUpdated": "2026-03-11T00:11:49.748Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/admin/projects/new/page.tsx"
+    },
+    "admin": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T00:14:35.460Z",
+        "lastUpdated": "2026-03-11T00:14:35.460Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/admin/page.tsx"
+    },
+    "complete": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T00:28:00.898Z",
+        "lastUpdated": "2026-03-11T00:28:00.898Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/api/admin/upload/complete/route.ts"
+    },
+    "[slug]": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-11T00:32:28.021Z",
+        "lastUpdated": "2026-03-11T00:33:34.729Z"
+      },
+      "lastFile": "/Volumes/Dev/daeyoung-openclaw-main/camera-archive/app/moment/[slug]/page.tsx"
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-03-07T14:51:47.374Z",
+    "onboardingCompleted": false,
+    "lastActivity": "2026-03-11T00:35:57.466Z"
+  },
+  "history": [
+    {
+      "timestamp": "2026-03-07T14:52:57.803Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T01:08:21.978Z",
+      "feature": "photobook-library",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T01:08:46.201Z",
+      "feature": "photobook-library",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T01:10:38.489Z",
+      "feature": "photobook-library",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T02:34:08.224Z",
+      "feature": "home",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T03:56:38.198Z",
+      "feature": "ui",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T03:57:04.212Z",
+      "feature": "ui",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T03:57:13.963Z",
+      "feature": "books",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T03:57:20.967Z",
+      "feature": "books",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T03:57:45.225Z",
+      "feature": "books",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:08:22.590Z",
+      "feature": "photobook-library",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:42:52.954Z",
+      "feature": "schemas",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:50:20.888Z",
+      "feature": "photobook-library",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:50:27.988Z",
+      "feature": "sanity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:50:36.588Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:50:41.961Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:50:50.939Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:50:58.602Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:51:09.267Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:51:13.953Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:51:18.586Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:51:28.838Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:52:22.809Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:52:34.675Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:52:51.904Z",
+      "feature": "book",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:55:59.622Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:57:07.848Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:57:13.889Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T04:57:29.048Z",
+      "feature": "eodud",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T05:11:23.548Z",
+      "feature": "book",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T23:46:10.311Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T23:47:03.120Z",
+      "feature": "cameras",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T23:47:26.207Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T23:48:06.178Z",
+      "feature": "work",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-10T23:48:21.884Z",
+      "feature": "moment",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:06:32.531Z",
+      "feature": "projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:06:47.823Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:07:06.120Z",
+      "feature": "photos",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:07:25.314Z",
+      "feature": "blocks",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:08:16.714Z",
+      "feature": "projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:08:47.369Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:10:18.365Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:11:26.202Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:11:49.748Z",
+      "feature": "new",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:12:32.512Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:14:35.460Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:15:39.859Z",
+      "feature": "photos",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:17:25.529Z",
+      "feature": "photos",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:17:39.465Z",
+      "feature": "photos",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:25:57.382Z",
+      "feature": "photos",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:26:51.065Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:27:05.006Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:27:25.560Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:28:00.898Z",
+      "feature": "complete",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:30:09.110Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:32:03.998Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:32:28.021Z",
+      "feature": "[slug]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:33:34.729Z",
+      "feature": "[slug]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:35:42.602Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-11T00:35:57.466Z",
+      "feature": "camera-archive",
+      "phase": "do",
+      "action": "updated"
+    }
+  ]
+}

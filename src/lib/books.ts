@@ -25,18 +25,19 @@ import type { PhotoBook, Category } from "@/types";
 import { books as staticBooks } from "@/data/books";
 import { categories as staticCategories } from "@/data/categories";
 
-// Sanity 연결 여부 확인 — 데이터가 없으면 정적 폴백 사용
-let useSanity: boolean | null = null;
+// Sanity 연결 여부 확인 — 데이터가 없으면 정적 폴백 사용 (60초 TTL)
+let useSanityCache: { value: boolean; ts: number } | null = null;
+const SANITY_TTL = 60_000;
 
 async function checkSanity(): Promise<boolean> {
-  if (useSanity !== null) return useSanity;
+  if (useSanityCache && Date.now() - useSanityCache.ts < SANITY_TTL) return useSanityCache.value;
   try {
     const count = await sanityFetch<number>(`count(*[_type == "book"])`);
-    useSanity = count > 0;
+    useSanityCache = { value: count > 0, ts: Date.now() };
   } catch {
-    useSanity = false;
+    useSanityCache = { value: false, ts: Date.now() };
   }
-  return useSanity;
+  return useSanityCache.value;
 }
 
 export async function getAllBooks(): Promise<PhotoBook[]> {

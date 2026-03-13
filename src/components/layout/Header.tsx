@@ -20,10 +20,14 @@ export default function Header({ onSearchClick }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
-  // 초기 테마 읽기
+  // 초기 테마 읽기 (localStorage 우선)
   useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme");
-    if (current === "light") setTheme("light");
+    const saved = localStorage.getItem("theme");
+    const current = saved ?? document.documentElement.getAttribute("data-theme");
+    if (current === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+      setTheme("light");
+    }
   }, []);
 
   // 모바일 드로어 열릴 때 스크롤 잠금
@@ -42,6 +46,7 @@ export default function Header({ onSearchClick }: HeaderProps) {
   function toggleTheme() {
     const next = theme === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
     setTheme(next);
   }
 
@@ -74,7 +79,8 @@ export default function Header({ onSearchClick }: HeaderProps) {
               letterSpacing: "0.15em",
             }}
           >
-            PHOTOBOOK & ArtBook LIBRARY
+            <span className="sm:hidden">PHOTOBOOK LIBRARY</span>
+            <span className="hidden sm:inline">PHOTOBOOK & ArtBook LIBRARY</span>
           </Link>
 
           {/* 가운데 네비게이션 — md 이상에서만 표시 */}
@@ -112,10 +118,7 @@ export default function Header({ onSearchClick }: HeaderProps) {
               type="button"
               onClick={onSearchClick}
               aria-label="검색 열기"
-              className="p-2 rounded-md transition-colors duration-150"
-              style={{ color: "var(--text-secondary)" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
-              onMouseLeave={e => (e.currentTarget.style.color = "var(--text-secondary)")}
+              className="p-2 rounded-md transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             >
               {/* 돋보기 SVG */}
               <svg
@@ -140,10 +143,7 @@ export default function Header({ onSearchClick }: HeaderProps) {
               type="button"
               onClick={toggleTheme}
               aria-label={theme === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환"}
-              className="p-2 rounded-md transition-colors duration-150"
-              style={{ color: "var(--text-secondary)" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
-              onMouseLeave={e => (e.currentTarget.style.color = "var(--text-secondary)")}
+              className="p-2 rounded-md transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             >
               {theme === "dark" ? (
                 /* Sun icon */

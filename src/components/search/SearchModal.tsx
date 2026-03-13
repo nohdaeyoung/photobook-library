@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { searchBooks } from "@/lib/search/fuseConfig";
@@ -14,10 +14,53 @@ interface SearchModalProps {
   books: PhotoBook[];
 }
 
-// Popular tags surfaced when query is empty and no results
-const POPULAR_TAGS = ["흑백", "다큐멘터리", "초상", "풍경", "스트리트", "한국", "클래식", "컬러"];
+function PopularTagList({ tags, onSelect }: { tags: string[]; onSelect: (tag: string) => void }) {
+  return (
+    <>
+      <p
+        className="text-xs font-medium uppercase tracking-widest mb-3"
+        style={{ color: "var(--text-muted)" }}
+      >
+        인기 태그
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <button
+            key={tag}
+            onClick={() => onSelect(tag)}
+            className={cn(
+              "px-3 py-1.5 rounded-full text-sm",
+              "transition-colors duration-150",
+              "focus-visible:outline-none focus-visible:ring-2",
+            )}
+            style={{
+              backgroundColor: "var(--bg-secondary)",
+              border: "1px solid var(--border-light)",
+              color: "var(--text-secondary)",
+            }}
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+    </>
+  );
+}
 
 export default function SearchModal({ isOpen, onClose, books }: SearchModalProps) {
+  const popularTags = useMemo(() => {
+    const tagCount = new Map<string, number>();
+    for (const book of books) {
+      for (const tag of book.tags) {
+        tagCount.set(tag, (tagCount.get(tag) ?? 0) + 1);
+      }
+    }
+    return [...tagCount.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([tag]) => tag);
+  }, [books]);
+
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PhotoBook[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
@@ -217,65 +260,15 @@ export default function SearchModal({ isOpen, onClose, books }: SearchModalProps
 
                   {/* Popular tags */}
                   <div className="w-full text-left">
-                    <p
-                      className="text-xs font-medium uppercase tracking-widest mb-3"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      인기 태그
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {POPULAR_TAGS.map((tag) => (
-                        <button
-                          key={tag}
-                          onClick={() => handleQueryChange(tag)}
-                          className={cn(
-                            "px-3 py-1.5 rounded-full text-sm",
-                            "transition-colors duration-150",
-                            "focus-visible:outline-none focus-visible:ring-2",
-                          )}
-                          style={{
-                            backgroundColor: "var(--bg-secondary)",
-                            border: "1px solid var(--border-light)",
-                            color: "var(--text-secondary)",
-                          }}
-                        >
-                          {tag}
-                        </button>
-                      ))}
-                    </div>
+                    <PopularTagList tags={popularTags} onSelect={handleQueryChange} />
                   </div>
                 </div>
               )}
 
               {/* Initial state — no query yet */}
-              {!hasSearched && query === "" && (
+              {!hasSearched && query === "" && popularTags.length > 0 && (
                 <div className="px-4 py-6">
-                  <p
-                    className="text-xs font-medium uppercase tracking-widest mb-3"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    인기 태그
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {POPULAR_TAGS.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => handleQueryChange(tag)}
-                        className={cn(
-                          "px-3 py-1.5 rounded-full text-sm",
-                          "transition-colors duration-150",
-                          "focus-visible:outline-none focus-visible:ring-2",
-                        )}
-                        style={{
-                          backgroundColor: "var(--bg-secondary)",
-                          border: "1px solid var(--border-light)",
-                          color: "var(--text-secondary)",
-                        }}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
+                  <PopularTagList tags={popularTags} onSelect={handleQueryChange} />
                 </div>
               )}
             </div>

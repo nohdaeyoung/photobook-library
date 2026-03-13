@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import DOMPurify from "dompurify";
 
 interface ContentRendererProps {
   html: string;
@@ -8,6 +9,9 @@ interface ContentRendererProps {
 
 export default function ContentRenderer({ html }: ContentRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const safeHtml = typeof window !== "undefined"
+    ? DOMPurify.sanitize(html, { ADD_ATTR: ["data-embed-service", "data-embed-id", "data-embed-url", "data-embed-rendered"] })
+    : html;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -128,7 +132,7 @@ export default function ContentRenderer({ html }: ContentRendererProps) {
       <div
         ref={containerRef}
         className="prose-content"
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
       <style>{`
         .prose-content {

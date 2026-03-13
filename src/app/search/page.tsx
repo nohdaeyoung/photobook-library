@@ -3,19 +3,19 @@ import { Suspense } from "react";
 import { getAllBooks, getAllTags, getRecentBooks } from "@/lib/books";
 import SearchPageClient from "@/components/search/SearchPageClient";
 
-export const metadata: Metadata = {
-  title: "검색",
-  description:
-    "사진책 라이브러리에서 책 제목, 작가, 태그로 원하는 사진책을 검색하세요.",
-  openGraph: {
-    title: "검색 — Photobook & ArtBook Library",
-    description:
-      "사진책 라이브러리에서 책 제목, 작가, 태그로 원하는 사진책을 검색하세요.",
-  },
-  alternates: {
-    canonical: "/search",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const allBooks = await getAllBooks();
+  const description = `${allBooks.length}권의 사진책을 제목, 작가, 태그로 검색하세요.`;
+  return {
+    title: "검색",
+    description,
+    openGraph: {
+      title: "검색 — Photobook & ArtBook Library",
+      description,
+    },
+    alternates: { canonical: "/search" },
+  };
+}
 
 export default async function SearchPage() {
   const allBooks = await getAllBooks();

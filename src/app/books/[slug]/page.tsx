@@ -32,12 +32,17 @@ export async function generateMetadata({
     return { title: "책을 찾을 수 없습니다" };
   }
 
+  const description =
+    book.description ??
+    `${book.author}의 사진책.${book.year ? ` ${book.year}년 출판.` : ""}${book.publisher ? ` ${book.publisher}.` : ""}${book.pages ? ` ${book.pages}페이지.` : ""}`;
+
   return {
     title: book.title,
-    description: book.description,
+    description,
+    keywords: book.tags.length > 0 ? book.tags : undefined,
     openGraph: {
       title: book.title,
-      description: book.description,
+      description,
       images: book.coverImage
         ? [
             {
@@ -53,7 +58,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: book.title,
-      description: book.description,
+      description,
       images: book.coverImage ? [book.coverImage.src] : [],
     },
     alternates: {

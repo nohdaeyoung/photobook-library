@@ -35,8 +35,12 @@ export const metadata: Metadata = {
   keywords: ["사진책", "포토북", "사진집", "photobook", "photography", "photo library"],
   openGraph: {
     type: "website",
+    url: "https://l.324.ing",
     locale: "ko_KR",
     siteName: "Photobook & ArtBook Library",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 

@@ -73,6 +73,27 @@ const PROMPTS: Prompt[] = [
       "관리자 페이지에 카테고리 관리 탭을 추가해줘. 도서/카테고리 탭으로 전환할 수 있고, 카테고리 생성/수정/삭제가 가능해야 해. 도서가 참조 중인 카테고리는 삭제 못하게 막아줘.",
     result: "도서/카테고리 탭 UI, 카테고리 CRUD, 참조 도서 삭제 차단 기능",
   },
+  {
+    title: "관리자 트래킹 코드 삽입",
+    description: "구글 서치 콘솔·태그 매니저·애널리틱스 코드를 관리자에서 직접 입력·저장",
+    prompt:
+      "관리자에 <head> 태그 바로 다음, <body>태그 바로 다음에 들어갈 용도로 입력창을 만들어줘. 구글 써치 콘솔, 태그관리자, 애널리틱스 코드를 넣을꺼야",
+    result: "Sanity siteSettings 싱글톤 스키마, 서버 액션, 레이아웃 head/body 주입 구현",
+  },
+  {
+    title: "sitemap.xml 자동 갱신",
+    description: "도서 CRUD 시 sitemap이 즉시 업데이트되도록 ISR 연동",
+    prompt:
+      "xml파일이 도서 목록이 안 보이는데 컨텐츠 업데이트시에 동시에 sitemap.xml 가 업데이트 되게 해줘",
+    result: "ISR(86400초) + 도서 CRUD 시 revalidatePath('/sitemap.xml') 즉시 갱신, _updatedAt 기반 lastModified",
+  },
+  {
+    title: "코드 품질 이슈 일괄 처리",
+    description: "코드 분석 후 발견된 22개 이슈를 담당 영역별로 전부 해결",
+    prompt: "남은 이슈 다 처리해줘",
+    result:
+      "FE(7): hover 전환·tailwind-merge·PopularTagList·TTL·컴포넌트 분리 / DS(5): @theme 토큰·라이트 모드 색상·SVG 아이콘 / SEO(5): OG 이미지·Twitter Card·schema.org URL / PERF(5): 서버 컴포넌트화·이미지 최적화·병렬 쿼리",
+  },
 ];
 
 export default function PromptsClient({ allBooks }: PromptsClientProps) {

@@ -26,6 +26,24 @@ const DEV_NOTES: DevNote[] = [
     date: "2026-03-02",
     entries: [
       {
+        type: "chore",
+        title: "코드 품질 이슈 22개 일괄 처리",
+        description:
+          "FE(7): onMouseEnter/Leave → CSS hover 전환, tailwind-merge 적용, PopularTagList 추출, useSanity 60초 TTL, 컴포넌트 파일 분리(ActiveFilterBadge·SortSelect·EmptyState·LoadMoreButton·SidebarContent·HomeInteractive) / DS(5): @theme inline 토큰 완성, 라이트 모드 danger/success, SVG 아이콘 / SEO(5): OG 이미지(next/og), Twitter Card, schema.org URL / PERF(5): HomeClient 서버 컴포넌트화, 이미지 최적화, 병렬 쿼리",
+      },
+      {
+        type: "feat",
+        title: "관리자 <head>/<body> 코드 삽입 기능 추가",
+        description:
+          "구글 서치 콘솔·태그 매니저·애널리틱스 코드를 관리자 설정 탭에서 직접 입력·저장. Sanity siteSettings 싱글톤 스키마, 서버 액션, 레이아웃 head/body 주입 구현.",
+      },
+      {
+        type: "fix",
+        title: "sitemap.xml ISR 및 도서 변경 시 자동 갱신",
+        description:
+          "도서 목록이 sitemap에 반영되지 않던 문제 수정. ISR(86400초) + 도서 CRUD 시 revalidatePath('/sitemap.xml')로 즉시 갱신. _updatedAt 기반 lastModified 적용.",
+      },
+      {
         type: "feat",
         title: "관리자 페이지에 카테고리 CRUD 관리 기능 추가",
         description:

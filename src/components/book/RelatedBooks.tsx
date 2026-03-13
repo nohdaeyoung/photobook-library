@@ -47,7 +47,7 @@ export function RelatedBooks({ books, currentSlug, className }: RelatedBooksProp
         )}
       >
         {related.map((book, index) => (
-          <div key={book.id} className="snap-start flex-shrink-0">
+          <div key={book.id} className="snap-start flex-shrink-0 w-44 sm:w-52">
             <BookCard
               book={book}
               priority={index === 0}

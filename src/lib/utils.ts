@@ -1,8 +1,9 @@
 import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-// Tailwind CSS 클래스 병합 유틸
+// Tailwind CSS 클래스 병합 유틸 (tailwind-merge로 클래스 충돌 해결)
 export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs);
+  return twMerge(clsx(inputs));
 }
 
 export function formatYear(year: number): string {
